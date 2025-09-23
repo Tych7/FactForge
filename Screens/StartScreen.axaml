@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DesktopApp"
+             x:Class="DesktopApp.StartScreen"
+             x:DataType="local:StartScreen">
+
+    <Viewbox Stretch="Uniform">
+        <Grid Width="1920" Height="1080">
+            <Grid.Background>
+                <ImageBrush Source="avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png" Stretch="UniformToFill"/>
+            </Grid.Background>
+            
+            <Button
+                Name="ExitButton" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Top" 
+                Click="ExitClick"
+                Background="Black">
+                <Image Source="avares://DesktopApp/Assets/Icons/cross.png" Width="50" Height="50"/>
+            </Button>
+
+            <Button
+                Name="SendQuestionButton" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Center" 
+                Click="SendQuestionClick"
+                Background="Black"
+                Content="SEND">
+            </Button>
+
+
+            <Image x:Name="QrImageControl" Width="200" Height="200"/>
+            <TextBlock x:Name="JoinUrlText"/>
+
+        </Grid>
+    </Viewbox>         
+</UserControl>
