@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DesktopApp"
+             x:Class="DesktopApp.QuizLibraryScreen"
+             x:DataType="local:QuizLibraryScreen">
+
+    <Viewbox Stretch="Uniform">
+        <Grid Width="1920" Height="1080">
+            <Grid.Background>
+                <ImageBrush Source="avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png" Stretch="UniformToFill"/>
+            </Grid.Background>
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,100,0,0">
+                <TextBlock
+                    Text="Quiz Library"
+                    Classes="neon-header"
+                    FontSize="60"
+                    HorizontalAlignment="Center"/>
+                <Border
+                    Classes="neon-underline"
+                    Margin="0,10,0,0"/>
+            </StackPanel>
+
+            <Button
+                Name="BackButton" 
+                Classes="neon-icon"
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Click="BackClick">
+                <Image Source="avares://DesktopApp/Assets/Icons/arrow.png"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+            </Button>
+
+            <Button
+                Name="CreateNewQuizButton" 
+                Classes="neon-text"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Bottom" 
+                Click="CreateNewQuizClick"
+                Content="NEW"
+                Margin="300,0,0,100"
+            />
+
+
+            <Button
+                Name="AddQuizButtonButton" 
+                Classes="neon-text"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Bottom" 
+                Click="AddQuizButtonClick"
+                Content="ADD BUTTON"
+                Margin="0,0,300,100"
+            />
+
+            <Border Classes="neon-image-frame" Height="500" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ScrollViewer Grid.Row="1"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel x:Name="QuizListPanel"
+                                Orientation="Vertical"
+                                Spacing="10">
+                        <!-- Initial buttons -->
+                        <Button Content="Quiz 1" Classes="neon-icon" Width="500"/>
+                        <Button Content="Quiz 2" Classes="neon-icon" Width="500"/>
+                        <Button Content="Quiz 3" Classes="neon-icon" Width="500"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+           
+
+
+            
+        </Grid>
+    </Viewbox>         
+</UserControl>

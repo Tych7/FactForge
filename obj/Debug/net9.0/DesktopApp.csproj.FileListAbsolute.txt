@@ -125,3 +125,4 @@ C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\wwwroot\sty
 C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\Data\Players.json
 C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\Data\quizzen\quiz.json
 C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\wwwroot\Assets\Logo.png
+C:\Documents\Software Projects\FactForge\DesktopApp\obj\Debug\net9.0\DesktopApp.sourcelink.json

@@ -3,13 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
+namespace DesktopApp;
+
+
 public class QuizQuestion
 {
+    public enum QuizTypes
+    {
+        multiple,
+        open
+    }
+
     public int Number { get; set; }
     public string? Type { get; set; } // "multiple" or "open"
     public string? Question { get; set; }
     public List<string>? Answers { get; set; }
     public string? CorrectAnswer { get; set; }
+    public int? Time { get; set; }
 }
 
 public class QuizData
@@ -24,7 +34,7 @@ public static class QuizManager
 
     static QuizManager()
     {
-        var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "quizzen", "quiz.json");
+        var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Quizzen", "quiz.json");
         LoadQuestions(filePath);
     }
 
@@ -33,22 +43,8 @@ public static class QuizManager
     {
         Console.WriteLine($"Loading quiz from: {filePath}");
 
-        if (!File.Exists(filePath))
-        {
-            Console.WriteLine("File not found!");
-            return;
-        }
-
-        var json = File.ReadAllText(filePath);
-        Console.WriteLine("File contents:");
-        Console.WriteLine(json);
-
-        var options = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
-
-        var data = JsonSerializer.Deserialize<QuizData>(json, options);
+        var handler = new JsonHandler<QuizData>();
+        var data = handler.LoadFromFile(filePath);
 
         if (data?.Quiz == null || data.Quiz.Count == 0)
         {
@@ -61,6 +57,7 @@ public static class QuizManager
         _currentIndex = 0;
         Console.WriteLine($"Loaded {_questions.Count} questions.");
     }
+
 
     public static QuizQuestion GetNextQuestion()
     {

@@ -12,11 +12,14 @@
             
             <Button
                 Name="ExitButton" 
+                Classes="neon-icon"
                 HorizontalAlignment="Right" 
                 VerticalAlignment="Top" 
-                Click="ExitClick"
-                Background="Black">
-                <Image Source="avares://DesktopApp/Assets/Icons/cross.png" Width="50" Height="50"/>
+                Click="ExitClick">
+                <Image Source="avares://DesktopApp/Assets/Icons/quit.png"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
             </Button>
 
             <Button
@@ -25,8 +28,18 @@
                 VerticalAlignment="Center" 
                 Click="SendQuestionClick"
                 Background="Black"
-                Content="SEND">
-            </Button>
+                Content="SEND"
+            />
+
+            <Button 
+                Name="QuizLibrary" 
+                Classes="neon-text" 
+                Content="LIBRARY" 
+                Click="ToLibraryScreenClick"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                Margin="0,0,0,100"
+            />
 
 
             <Image x:Name="QrImageControl" Width="200" Height="200"/>

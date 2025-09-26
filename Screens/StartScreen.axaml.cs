@@ -1,12 +1,11 @@
 using System;
 using System.Net.Sockets;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Microsoft.AspNetCore.SignalR;
-
-
-
 
 namespace DesktopApp;
 
@@ -41,11 +40,24 @@ public partial class StartScreen : UserControl
                 {
                     type = q.Type,       // "multiple" or "open"
                     text = q.Question,
-                    choices = q.Answers  // [] for open questions
+                    choices = q.Answers,  // [] for open questions
+                    time = q.Time
                 }
             );
         }
     }
+
+    private void ToLibraryScreenClick(object? sender, RoutedEventArgs e)
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            if (desktop.MainWindow is MainWindow mainWindow)
+            {
+                mainWindow.MainContent.Content = new QuizLibraryScreen();
+            }
+        }
+    }
+
 
 
     private void ExitClick(object? sender, RoutedEventArgs args)
