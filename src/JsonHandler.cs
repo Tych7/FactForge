@@ -42,4 +42,5 @@ public class JsonHandler<T>
         File.WriteAllText(filePath, "");
         Console.WriteLine($"New JSON file created at {filePath}");
     }
+
 }

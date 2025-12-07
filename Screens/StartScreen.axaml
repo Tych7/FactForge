@@ -12,7 +12,7 @@
             
             <Button
                 Name="ExitButton" 
-                Classes="neon-icon"
+                Classes="neon-icon-button"
                 HorizontalAlignment="Right" 
                 VerticalAlignment="Top" 
                 Click="ExitClick">
@@ -33,7 +33,7 @@
 
             <Button 
                 Name="QuizLibrary" 
-                Classes="neon-text" 
+                Classes="neon-text-button" 
                 Content="LIBRARY" 
                 Click="ToLibraryScreenClick"
                 VerticalAlignment="Bottom"

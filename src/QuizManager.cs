@@ -5,28 +5,6 @@ using System.Text.Json;
 
 namespace DesktopApp;
 
-
-public class QuizQuestion
-{
-    public enum QuizTypes
-    {
-        multiple,
-        open
-    }
-
-    public int Number { get; set; }
-    public string? Type { get; set; } // "multiple" or "open"
-    public string? Question { get; set; }
-    public List<string>? Answers { get; set; }
-    public string? CorrectAnswer { get; set; }
-    public int? Time { get; set; }
-}
-
-public class QuizData
-{
-    public List<QuizQuestion>? Quiz { get; set; }
-}
-
 public static class QuizManager
 {
     private static List<QuizQuestion>? _questions;
@@ -34,7 +12,7 @@ public static class QuizManager
 
     static QuizManager()
     {
-        var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Quizzen", "quiz.json");
+        var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Quizzen", "quiz_1.json");
         LoadQuestions(filePath);
     }
 
@@ -67,6 +45,41 @@ public static class QuizManager
         var question = _questions[_currentIndex];
         _currentIndex = (_currentIndex + 1) % _questions.Count;
         return question;
+    }
+
+    public static List<string> GetAllQuizTitles()
+    {
+        var quizPath = Path.Combine(AppContext.BaseDirectory, "Data", "Quizzen");
+        var titles = new List<string>();
+
+        if (!Directory.Exists(quizPath))
+            return titles;
+
+        foreach (var file in Directory.GetFiles(quizPath, "*.json"))
+        {
+            try
+            {
+                var json = File.ReadAllText(file);
+
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("title", out var titleElement) && titleElement.ValueKind == JsonValueKind.String)
+                {
+                    titles.Add(titleElement.GetString()!);
+                }
+                else
+                {
+                    Console.WriteLine($"No 'title' found in {file}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading {file}: {ex.Message}");
+            }
+        }
+
+        return titles;
     }
 
 }

@@ -123,6 +123,6 @@ C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\wwwroot\ind
 C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\wwwroot\Assets\BricksMobile.png
 C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\wwwroot\styles.css
 C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\Data\Players.json
-C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\Data\quizzen\quiz.json
 C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\wwwroot\Assets\Logo.png
 C:\Documents\Software Projects\FactForge\DesktopApp\obj\Debug\net9.0\DesktopApp.sourcelink.json
+C:\Documents\Software Projects\FactForge\DesktopApp\bin\Debug\net9.0\Data\Quizzen\quiz_1.json

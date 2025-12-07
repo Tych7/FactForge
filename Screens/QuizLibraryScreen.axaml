@@ -5,7 +5,7 @@
              x:DataType="local:QuizLibraryScreen">
 
     <Viewbox Stretch="Uniform">
-        <Grid Width="1920" Height="1080">
+        <Grid x:Name="MainGrid" Width="1920" Height="1080">
             <Grid.Background>
                 <ImageBrush Source="avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png" Stretch="UniformToFill"/>
             </Grid.Background>
@@ -23,7 +23,7 @@
 
             <Button
                 Name="BackButton" 
-                Classes="neon-icon"
+                Classes="neon-icon-button"
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Click="BackClick">
@@ -35,43 +35,24 @@
 
             <Button
                 Name="CreateNewQuizButton" 
-                Classes="neon-text"
+                Classes="neon-text-button"
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Bottom" 
                 Click="CreateNewQuizClick"
-                Content="NEW"
-                Margin="300,0,0,100"
+                Content="CREATE NEW"
+                Margin="0,0,0,100"
             />
 
-
-            <Button
-                Name="AddQuizButtonButton" 
-                Classes="neon-text"
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Bottom" 
-                Click="AddQuizButtonClick"
-                Content="ADD BUTTON"
-                Margin="0,0,300,100"
-            />
-
-            <Border Classes="neon-image-frame" Height="500" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border Classes="neon-frame" Height="500" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <ScrollViewer Grid.Row="1"
                             VerticalScrollBarVisibility="Auto"
                             HorizontalScrollBarVisibility="Disabled">
                     <StackPanel x:Name="QuizListPanel"
                                 Orientation="Vertical"
-                                Spacing="10">
-                        <!-- Initial buttons -->
-                        <Button Content="Quiz 1" Classes="neon-icon" Width="500"/>
-                        <Button Content="Quiz 2" Classes="neon-icon" Width="500"/>
-                        <Button Content="Quiz 3" Classes="neon-icon" Width="500"/>
+                                Width = "500">
                     </StackPanel>
                 </ScrollViewer>
             </Border>
-           
-
-
-            
         </Grid>
     </Viewbox>         
 </UserControl>
