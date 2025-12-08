@@ -27,5 +27,11 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [C:/Documents/Software Projects/FactForge/DesktopApp/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[C:/Documents/Software Projects/FactForge/DesktopApp/Screens/CreateQuizScreen.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Documents/Software Projects/FactForge/DesktopApp/Screens/QuizLibraryScreen.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [C:/Documents/Software Projects/FactForge/DesktopApp/Screens/StartScreen.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

@@ -1,0 +1,72 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DesktopApp"
+             x:Class="DesktopApp.CreateQuizScreen"
+             x:DataType="local:CreateQuizScreen">
+
+    <Viewbox Stretch="Uniform">
+        <Grid Width="1920" Height="1080">
+            <Grid.Background>
+                <ImageBrush Source="avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png" Stretch="UniformToFill"/>
+            </Grid.Background>
+
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    Name="BackButton" 
+                    Classes="neon-icon-button"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Click="BackClick">
+                    <Image Source="avares://DesktopApp/Assets/Icons/arrow.png"
+                        Stretch="Uniform"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
+                </Button>
+
+                <Button
+                    Name="NewPageButton" 
+                    Classes="neon-icon-button"
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top" 
+                    Click="NewPageClick">
+                    <Image Source="avares://DesktopApp/Assets/Icons/plus.png"
+                        Stretch="Uniform"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
+                </Button>
+            </StackPanel>
+            
+
+            <StackPanel Height="972" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <Border Classes="neon-frame" Height="972" >
+                    <ScrollViewer Grid.Row="1"
+                                VerticalScrollBarVisibility="Auto"
+                                HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="QuizPages"
+                                    Orientation="Vertical"
+                                    Width="172">
+                            <!-- Buttons will now stretch -->
+                            <Button Content="H1" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch"/>
+                            <Button Content="Q2" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch"/>
+                            <Button Content="Q3" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+
+                <Border Classes="neon-frame" Height="972" Width="1728" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <Grid x:Name="Quizpage">
+                    
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            
+
+
+
+
+
+            
+        </Grid>
+    </Viewbox>         
+</UserControl>
