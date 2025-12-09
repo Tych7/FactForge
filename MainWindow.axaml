@@ -22,7 +22,8 @@
 
 
                 <Button 
-                    Classes="neon-text-button" 
+                    Classes="neon-text-button"
+                    Height = "80" 
                     Content="START" 
                     Click="StartClick"
                     VerticalAlignment="Bottom"

@@ -34,7 +34,8 @@
             </Button>
 
             <Button
-                Name="CreateNewQuizButton" 
+                Name="CreateNewQuizButton"
+                Height = "80" 
                 Classes="neon-text-button"
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Bottom" 
@@ -49,7 +50,7 @@
                             HorizontalScrollBarVisibility="Disabled">
                     <StackPanel x:Name="QuizListPanel"
                                 Orientation="Vertical"
-                                Width = "500">
+                                Width = "800">
                     </StackPanel>
                 </ScrollViewer>
             </Border>

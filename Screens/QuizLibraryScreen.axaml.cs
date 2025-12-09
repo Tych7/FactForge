@@ -24,23 +24,21 @@ public partial class QuizLibraryScreen : UserControl
 
     private void AddNewQuizInstance(string QuizTitle)
     {
-        var button = new Button
-        {
-            Content = QuizTitle,
-            Classes = { "neon-text-button" },
-            Margin = new Thickness(10, 10, 10, 0),
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
-        };
+        var quizLibScrollElement = QuizLibScrollElement.Create(QuizTitle, deleteQuizClick, editQuizClick);
 
-        // Optional: attach a click handler
-        button.Click += (s, e) =>
-        {
-            // Handle quiz button click here
-            Console.WriteLine($"{QuizTitle} clicked!");
-        };
-
-        QuizListPanel.Children.Add(button);
+        QuizListPanel.Children.Add(quizLibScrollElement);
     }
+
+    private void editQuizClick()
+    {
+        Console.WriteLine("edit button clicked!");
+    }
+
+    private void deleteQuizClick()
+    {
+        Console.WriteLine("delete button clicked!");
+    }
+
 
     public void AddQuizButtonClick(object? sender, RoutedEventArgs e)
     {

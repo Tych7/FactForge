@@ -2,36 +2,40 @@
   "title": "Test Quiz",
   "quiz": [
     {
-      "number": 1,
+      "id": 1,
       "type": "multiple",
       "time": 15,
       "question": "What is the capital of France?",
       "answers": ["Paris", "Berlin", "Madrid", "Rome"],
-      "correctAnswer": "Paris"
+      "correctAnswer": "Paris",
+      "category": "none"
     },
     {
-      "number": 2,
+      "id": 2,
       "type": "multiple",
       "time": 15,
       "question": "Which planet is known as the Red Planet?",
       "answers": ["Earth", "Mars", "Jupiter", "Venus"],
-      "correctAnswer": "Mars"
+      "correctAnswer": "Mars",
+      "category": "none"
     },
     {
-      "number": 3,
+      "id": 3,
       "type": "multiple",
       "time": 15,
       "question": "Who painted the Mona Lisa?",
       "answers": ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
-      "correctAnswer": "Leonardo da Vinci"
+      "correctAnswer": "Leonardo da Vinci",
+      "category": "none"
     },
     {
-      "number": 4,
+      "id": 4,
       "type": "open",
       "time": 15,
       "question": "Name a programming language that starts with 'P'.",
       "answers": [],
-      "correctAnswer": "Python"
+      "correctAnswer": "Python",
+      "category": "none"
     }
   ]
 }
