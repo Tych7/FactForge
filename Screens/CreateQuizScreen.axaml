@@ -46,9 +46,9 @@
                                     Orientation="Vertical"
                                     Width="172">
                             <!-- Buttons will now stretch -->
-                            <Button Content="H1" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch"/>
-                            <Button Content="Q2" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch"/>
-                            <Button Content="Q3" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch"/>
+                            <Button Content="H1" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch" Height = "80"/>
+                            <Button Content="Q2" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch" Height = "80"/>
+                            <Button Content="Q3" Classes="neon-text-button" Margin="10,10,10,0" HorizontalAlignment="Stretch" Height = "80"/>
                         </StackPanel>
                     </ScrollViewer>
                 </Border>
