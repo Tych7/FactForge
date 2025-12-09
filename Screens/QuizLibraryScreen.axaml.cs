@@ -17,7 +17,8 @@ public partial class QuizLibraryScreen : UserControl
 
     private void InitQuizScrollView()
     {
-        foreach (var quizTitle in QuizManager.GetAllQuizTitles()){
+        QuizListPanel.Children.Clear();
+        foreach (var quizTitle in QuizDataHandler.GetAllQuizTitles()){
             AddNewQuizInstance(quizTitle);
         }
     }
@@ -25,18 +26,18 @@ public partial class QuizLibraryScreen : UserControl
     private void AddNewQuizInstance(string QuizTitle)
     {
         var quizLibScrollElement = QuizLibScrollElement.Create(QuizTitle, deleteQuizClick, editQuizClick);
-
         QuizListPanel.Children.Add(quizLibScrollElement);
     }
 
-    private void editQuizClick()
+    private void editQuizClick(string QuizTitle)
     {
         Console.WriteLine("edit button clicked!");
     }
 
-    private void deleteQuizClick()
+    private void deleteQuizClick(string QuizTitle)
     {
-        Console.WriteLine("delete button clicked!");
+        bool result = QuizDataHandler.DeleteQuiz(QuizTitle);
+        if (result) InitQuizScrollView();
     }
 
 
@@ -49,7 +50,7 @@ public partial class QuizLibraryScreen : UserControl
     {
         var (newQuizDialog, titleBox) = Dialog.CreateNewQuiz(MainGrid, title =>
         {
-            Console.WriteLine("User entered title: " + title);
+            QuizDataHandler.CreateQuiz(title);
 
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
