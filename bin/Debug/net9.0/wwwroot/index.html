@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join Quiz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Join screen -->
+  <div id="joinScreen" style="margin-bottom: 10%;">
+    <img id="appLogo" src="Assets/Logo.png"
+    style="
+      width: 80%;
+      max-width: 600px;
+      height: auto;
+      border-color: #00ffff;
+      border: 5px solid #00ffff;
+      border-radius: 4px;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;"
+    >        
+    <h2>Enter your name to join the quiz</h2>
+    <input type="text" id="name" placeholder="Your name">
+    <button id="joinBtn">Join Quiz</button>
+  </div>
+
+  <!-- Waiting screen -->
+  <div id="waitingScreen" style="display:none;">
+    <h2>Waiting for the next question...</h2>
+    <p>Please hold on, the quizmaster will start soon!</p>
+  </div>
+
+  <!-- Question screen -->
+  <div id="questionScreen" style="display:none;">
+    <div id="questionHeader">
+      <h2 id="questionText"></h2>
+      <span id="timer">0</span>
+    </div>
+
+    <!-- Timer bar -->
+    <div id="timerBarContainer">
+      <div id="timerBar" style="margin-bottom: 5%;"></div>
+    </div>
+
+    <div id="choices"></div>
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+  <script src="join.js"></script>
+</body>
+</html>
