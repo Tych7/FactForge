@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class QuizQuestion
+public record QuizQuestion
 {
     public enum QuizTypes
     {
@@ -8,10 +8,11 @@ public class QuizQuestion
         open
     }
 
-    public int Number { get; set; }
-    public string? Type { get; set; } // "multiple" or "open"
+    public int Id { get; set; }
+    public string? Type { get; set; }
     public string? Question { get; set; }
     public List<string>? Answers { get; set; }
     public string? CorrectAnswer { get; set; }
     public int? Time { get; set; }
+    public string? Category { get; set; }
 }

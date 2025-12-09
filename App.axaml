@@ -161,22 +161,24 @@
                         CornerRadius="10"
                         Padding="20,0,20,0"
                         Background="Black">
-                        <TextBlock 
-                            Text="{TemplateBinding Content}"
-                            FontSize="50"
-                            Foreground="#8C52FF"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
-                            <TextBlock.Effect>
-                                <DropShadowEffect
-                                    Color="#8C52FF"
-                                    BlurRadius="10"
-                                    Opacity="1"
-                                    OffsetX="-1"
-                                    OffsetY="-1"/>
-                            </TextBlock.Effect>
-                        </TextBlock>
+                        <Viewbox Stretch="Uniform">
+                            <TextBlock 
+                                Text="{TemplateBinding Content}"
+                                Foreground="#8C52FF"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect
+                                        Color="#8C52FF"
+                                        BlurRadius="10"
+                                        Opacity="1"
+                                        OffsetX="-1"
+                                        OffsetY="-1"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Viewbox>
                     </Border>
+
                 </ControlTemplate>
 
             </Setter>

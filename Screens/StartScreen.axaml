@@ -32,7 +32,8 @@
             />
 
             <Button 
-                Name="QuizLibrary" 
+                Name="QuizLibrary"
+                Height = "80" 
                 Classes="neon-text-button" 
                 Content="LIBRARY" 
                 Click="ToLibraryScreenClick"
