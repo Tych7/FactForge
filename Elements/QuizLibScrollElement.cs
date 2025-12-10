@@ -9,7 +9,7 @@ namespace DesktopApp
 {
     public static class QuizLibScrollElement
     {
-        public static Border Create(string QuizTitle, Action onDelete, Action onEdit)
+        public static Border Create(string QuizTitle, Action<string> onDelete, Action<string> onEdit)
         {
             Border elementBorder = new Border
             {
@@ -60,10 +60,7 @@ namespace DesktopApp
                 Content = editButtonIcon,
                 Margin = new Avalonia.Thickness(0,0,10,0)
             };
-            editButton.Click += (sender, e) =>
-            {
-                onEdit?.Invoke();
-            };
+            editButton.Click += (_, __) => onEdit?.Invoke(QuizTitle);
             buttonUnit.Children.Add(editButton);
 
             var deleteIcon = new Uri("avares://DesktopApp/Assets/Icons/trash.png");
@@ -83,10 +80,7 @@ namespace DesktopApp
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 Content = deleteButtonIcon
             };
-            deleteButton.Click += (sender, e) =>
-            {
-                onDelete?.Invoke();
-            };
+            deleteButton.Click += (_, __) => onDelete?.Invoke(QuizTitle);
             buttonUnit.Children.Add(deleteButton);
 
             mainGrid.Children.Add(buttonUnit);

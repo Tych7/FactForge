@@ -1,0 +1,89 @@
+<!-- TextStyles.xaml -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+     <!-- Neon square button style -->
+        <Style Selector="Button.neon-icon-button">
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="80"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#00FFFF"/>
+            <Setter Property="BorderThickness" Value="5"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Foreground" Value="#00FFFF"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="20"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+        <Style Selector="Button.neon-icon-button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#00FFFF"/>
+            <Setter Property="BorderThickness" Value="8"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="20"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+        <!-- Neon Text Button Style -->
+        <Style Selector="Button.neon-text-button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontFamily" Value="{StaticResource OrbitronRegular}"/>
+
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="20"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+            
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border 
+                        BorderThickness="5"
+                        BorderBrush="#00FFFF"
+                        CornerRadius="10"
+                        Padding="20,0,20,0"
+                        Background="Black">
+                        <Viewbox Stretch="Uniform">
+                            <TextBlock 
+                                Text="{TemplateBinding Content}"
+                                Foreground="{TemplateBinding Foreground}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect
+                                        Color="{TemplateBinding Foreground}"
+                                        BlurRadius="10"
+                                        Opacity="1"
+                                        OffsetX="-1"
+                                        OffsetY="-1"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Viewbox>
+                    </Border>
+
+                </ControlTemplate>
+
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.neon-text-button:pointerover /template/ Border">
+            <Setter Property="BorderThickness" Value="8"/>
+        </Style>
+
+</Styles>

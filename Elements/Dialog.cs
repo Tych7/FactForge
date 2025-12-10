@@ -2,12 +2,13 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Tmds.DBus.Protocol;
 
 namespace DesktopApp
 {
     public static class Dialog
     {
-        public static (Grid dialogGrid, TextBox titleInput) CreateNewQuiz(Grid parentGrid, Action<string> onConfirm)
+        public static Grid AreYouSure(Grid parentGrid, string message, Action onConfirm)
         {
             int dialogWidth = 600;
             int dialogHeight = 400;
@@ -23,10 +24,64 @@ namespace DesktopApp
 
             Grid dialogWindow = AddDialogWindow(dialogHeight, dialogWidth);
 
-            TextBlock header = AddDialogHeader("Add Quiz", edgeSpacing);
-            dialogWindow.Children.Add(header);
+            TextBlock dialogHeader = AddDialogHeader("Are you sure?", edgeSpacing);
+            dialogWindow.Children.Add(dialogHeader);
 
-            var (inputQuizName, titleInput) = AddUserInput("Title", dialogWidth - edgeSpacing * 2); 
+            Grid dialogMessage = AddDynamicMessage(message, dialogHeight - 200, dialogWidth - edgeSpacing * 2);
+            dialogWindow.Children.Add(dialogMessage);
+
+            int buttonPanelHeigth = 100;
+            Grid buttonPanel = new Grid
+            {
+                Width = dialogWidth,
+                Height = buttonPanelHeigth,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Avalonia.Thickness(0, 0, 0, edgeSpacing)
+            };
+
+            // Close Button
+            var closeButton = AddButtonLeft("Close", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            closeButton.Click += (sender, e) =>
+            {
+                parentGrid.Children.Remove(dialogGrid);
+            };
+            buttonPanel.Children.Add(closeButton);
+
+            // Confirm Button
+            var confirmButton = AddButtonRight("Confirm", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            confirmButton.Click += (sender, e) =>
+            {
+                onConfirm?.Invoke();
+                parentGrid.Children.Remove(dialogGrid);
+            };
+            buttonPanel.Children.Add(confirmButton);
+            dialogWindow.Children.Add(buttonPanel);
+
+            dialogGrid.Children.Add(dialogWindow);
+            return dialogGrid;
+        }  
+
+        public static (Grid dialogGrid, TextBox titleInput) CreateNewQuiz(Grid parentGrid, string header, string userinputTitle, Action<string> onConfirm)
+        {
+            int dialogWidth = 600;
+            int dialogHeight = 400;
+            int edgeSpacing = 20;
+
+            Grid dialogGrid = new Grid { };
+
+            Border darkOverlay = CreateOverlay();
+            dialogGrid.Children.Add(darkOverlay);
+
+            Border dialogFrame = AddDialogFrame(dialogHeight, dialogWidth);
+            dialogGrid.Children.Add(dialogFrame);
+
+            Grid dialogWindow = AddDialogWindow(dialogHeight, dialogWidth);
+
+            TextBlock dialogHeader = AddDialogHeader(header, edgeSpacing);
+            dialogWindow.Children.Add(dialogHeader);
+
+            var (inputQuizName, titleInput) = AddUserInput(userinputTitle, dialogWidth - edgeSpacing * 2); 
             dialogWindow.Children.Add(inputQuizName);
 
             int buttonPanelHeigth = 100;
@@ -109,6 +164,34 @@ namespace DesktopApp
             };
         }
 
+        private static Grid AddDynamicMessage(string text, int height, int width)
+        {
+            Grid messageOutline = new Grid
+            {
+                Height = height,
+                Width = width,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Avalonia.Thickness(0,0,0,20)
+            };
+
+            TextBlock message = new TextBlock
+            {
+                Text = text,
+                FontSize = 25,
+                Classes = { "neon-text" },
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                TextWrapping = TextWrapping.Wrap,
+                TextAlignment = TextAlignment.Center,
+                Width = width,
+                Foreground = new SolidColorBrush(Color.Parse("#00FFFF"))
+            };
+
+            messageOutline.Children.Add(message);
+            return messageOutline;
+        }
+
         private static (Grid container, TextBox input) AddUserInput(string title, double width)
         {
             Grid userInput = new Grid
@@ -150,7 +233,8 @@ namespace DesktopApp
                 Margin = new Avalonia.Thickness(edgeMargin, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Width = width,
-                Height = 70
+                Height = 70,
+                Foreground= new SolidColorBrush(Color.Parse("#8C52FF"))
             };
         }
 
@@ -163,7 +247,8 @@ namespace DesktopApp
                 Margin = new Avalonia.Thickness(0, 0, edgeMargin, 0),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Width = width,
-                Height = 70
+                Height = 70,
+                Foreground = new SolidColorBrush(Color.Parse("#8C52FF"))
             };
         }
     

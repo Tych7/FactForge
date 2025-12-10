@@ -12,13 +12,13 @@ public static class QuizManager
 
     static QuizManager()
     {
-        var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Quizzen", "quiz_1.json");
-        LoadQuestions(filePath);
+        LoadQuestions("Test Quiz");
     }
 
-
-    public static void LoadQuestions(string filePath)
+    public static void LoadQuestions(string quizName)
     {
+        string quizFileName = QuizDataHandler.GetFileNameByTitle(quizName);
+        var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Quizzen", quizFileName);
         Console.WriteLine($"Loading quiz from: {filePath}");
 
         var handler = new JsonHandler<QuizData>();
@@ -45,41 +45,6 @@ public static class QuizManager
         var question = _questions[_currentIndex];
         _currentIndex = (_currentIndex + 1) % _questions.Count;
         return question;
-    }
-
-    public static List<string> GetAllQuizTitles()
-    {
-        var quizPath = Path.Combine(AppContext.BaseDirectory, "Data", "Quizzen");
-        var titles = new List<string>();
-
-        if (!Directory.Exists(quizPath))
-            return titles;
-
-        foreach (var file in Directory.GetFiles(quizPath, "*.json"))
-        {
-            try
-            {
-                var json = File.ReadAllText(file);
-
-                using var doc = JsonDocument.Parse(json);
-                var root = doc.RootElement;
-
-                if (root.TryGetProperty("title", out var titleElement) && titleElement.ValueKind == JsonValueKind.String)
-                {
-                    titles.Add(titleElement.GetString()!);
-                }
-                else
-                {
-                    Console.WriteLine($"No 'title' found in {file}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading {file}: {ex.Message}");
-            }
-        }
-
-        return titles;
     }
 
 }

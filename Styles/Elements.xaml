@@ -1,0 +1,36 @@
+<!-- TextStyles.xaml -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+        <!-- Neon Underline -->
+        <Style Selector="Border.neon-underline">
+            <Setter Property="BorderBrush" Value="#00FFFF"/>
+            <Setter Property="BorderThickness" Value="0,0,0,5"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="20"
+                    OffsetX="0"
+                    OffsetY="0"
+                    Opacity="1"/>
+            </Setter>
+        </Style> 
+
+        <!-- Neon Frame Style -->
+        <Style Selector="Border.neon-frame">
+            <Setter Property="BorderThickness" Value="8"/>
+            <Setter Property="BorderBrush" Value="#00FFFF"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="25"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+</Styles>
