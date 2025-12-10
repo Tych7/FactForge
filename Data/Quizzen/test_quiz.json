@@ -1,4 +1,6 @@
 {
+  "id": 1,
+  "favorite": false,
   "title": "Test Quiz",
   "quiz": [
     {
@@ -37,5 +39,6 @@
       "correctAnswer": "Python",
       "category": "none"
     }
-  ]
+  ],
+  "timestamp": "2025-12-10 21:23:38"
 }

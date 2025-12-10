@@ -7,10 +7,7 @@ namespace DesktopApp;
 
 public static class QuizDataHandler
 {
-    static QuizDataHandler()
-    {
-
-    }
+    static QuizDataHandler(){}
 
     public static void CreateQuiz(string title, List<QuizQuestion>? questions = null)
     {
@@ -21,12 +18,14 @@ public static class QuizDataHandler
 
         var quizData = new QuizData
         {
+            Id = GetFirstAvailibleQuizId(),
+            Favorite = false,
             Title = title,
-            Quiz = questions ?? new List<QuizQuestion>()
+            Quiz = questions ?? new List<QuizQuestion>(),
+            Timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
         };
 
-        var safeFileName = string.Concat(title.Split(Path.GetInvalidFileNameChars())) + ".json";
-        var filePath = Path.Combine(quizPath, safeFileName);
+        var filePath = Path.Combine(quizPath, $"quiz_{GetFirstAvailibleQuizId()}.json");
 
         var options = new JsonSerializerOptions { WriteIndented = true };
 
@@ -44,8 +43,7 @@ public static class QuizDataHandler
         if (!Directory.Exists(quizPath))
             return false;
 
-        var safeFileName = string.Concat(title.Split(Path.GetInvalidFileNameChars())) + ".json";
-        var filePath = Path.Combine(quizPath, safeFileName);
+        var filePath = Path.Combine(quizPath, GetFileNameByTitle(title));
 
         if (!File.Exists(filePath))
         {
@@ -66,8 +64,6 @@ public static class QuizDataHandler
         }
     }
 
-
-
     public static string GetFileNameByTitle(string title)
     {
         var quizPath = Path.Combine(Environment.CurrentDirectory, "Data", "Quizzen");
@@ -77,7 +73,7 @@ public static class QuizDataHandler
 
         foreach (var file in Directory.GetFiles(quizPath, "*.json"))
         {
-            var extractedTitle = ExtractTitleFromFile(file);
+            var extractedTitle = ExtractVarFromFile(file, "title");
             if (extractedTitle == title) return file;
         }
 
@@ -95,14 +91,48 @@ public static class QuizDataHandler
 
         foreach (var file in Directory.GetFiles(quizPath, "*.json"))
         {
-            var extractedTitle = ExtractTitleFromFile(file);
+            var extractedTitle = ExtractVarFromFile(file, "title");
             if (!string.IsNullOrEmpty(extractedTitle)) titles.Add(extractedTitle);
         }
 
         return titles;
     }
 
-    private static string? ExtractTitleFromFile(string file)
+    private static int GetFirstAvailibleQuizId()
+    {
+        var quizPath = Path.Combine(Environment.CurrentDirectory, "Data", "Quizzen");
+
+        var ids = new List<int>();
+
+        foreach (var file in Directory.GetFiles(quizPath, "*.json"))
+        {
+            var extractedId = ExtractVarFromFile(file, "id");
+            if (!string.IsNullOrEmpty(extractedId) && int.TryParse(extractedId, out int id))
+            {
+                ids.Add(id);
+            }
+        }
+
+        ids.Sort();
+
+        int expected = 1;
+        foreach (var id in ids)
+        {
+            if (id == expected)
+            {
+                expected++;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return expected;
+    }
+
+
+    private static string? ExtractVarFromFile(string file, string varName)
     {
         try
         {
@@ -110,13 +140,19 @@ public static class QuizDataHandler
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
-            if (root.TryGetProperty("title", out var titleElement) && titleElement.ValueKind == JsonValueKind.String)
+            if (root.TryGetProperty(varName, out var element))
             {
-                return titleElement.GetString();
+                switch (element.ValueKind)
+                {
+                    case JsonValueKind.String:
+                        return element.GetString();
+                    case JsonValueKind.Number:
+                        return element.GetInt32().ToString();
+                }
             }
             else
             {
-                Console.WriteLine($"No 'title' found in {file}");
+                Console.WriteLine($"No '{varName}' found in {file}");
             }
         }
         catch (Exception ex)
