@@ -1,0 +1,48 @@
+<!-- TextStyles.xaml -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Neon TextBox Style -->
+        <Style Selector="TextBox.neon-input">
+            <Setter Property="FontFamily" Value="{StaticResource OrbitronRegular}"/>
+            <Setter Property="FontSize" Value="28"/>
+
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="MinHeight" Value="48"/> 
+
+            <Setter Property="Foreground" Value="#8C52FF"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#00FFFF"/>
+            <Setter Property="BorderThickness" Value="5"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20,5,20,5"/>
+
+            <Setter Property="CaretBrush" Value="#8C52FF"/>
+
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="20"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+        <Style Selector="TextBox.neon-input:pointerover">
+            <Setter Property="BorderThickness" Value="8"/>
+        </Style>
+
+        <Style Selector="TextBox.neon-input:focus">
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="30"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+
+</Styles>

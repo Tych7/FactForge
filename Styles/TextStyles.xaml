@@ -1,0 +1,33 @@
+<!-- TextStyles.xaml -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="TextBlock.neon-header">
+        <Setter Property="Foreground" Value="#8C52FF"/>
+        <Setter Property="FontFamily" Value="{StaticResource OrbitronBold}"/>
+        <Setter Property="Padding" Value="20 0"/>
+        <Setter Property="Effect">
+            <DropShadowEffect 
+                Color="#8C52FF"
+                BlurRadius="10"
+                Opacity="1"
+                OffsetX="-1"
+                OffsetY="-1"/>
+        </Setter>
+    </Style>
+
+    <Style Selector="TextBlock.neon-text">
+        <Setter Property="Foreground" Value="#8C52FF"/>
+        <Setter Property="FontFamily" Value="{StaticResource OrbitronRegular}"/>
+        <Setter Property="Padding" Value="20 0"/>
+        <Setter Property="Effect">
+            <DropShadowEffect 
+                Color="#8C52FF"
+                BlurRadius="10"
+                Opacity="1"
+                OffsetX="-1"
+                OffsetY="-1"/>
+        </Setter>
+    </Style>
+
+</Styles>

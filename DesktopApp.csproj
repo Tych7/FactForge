@@ -33,6 +33,8 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**\*" />
+    <AvaloniaResource Include="Styles\*.*" />
+
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <Content Include="wwwroot\**\*.*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Data\**\*.*" CopyToOutputDirectory="PreserveNewest" />

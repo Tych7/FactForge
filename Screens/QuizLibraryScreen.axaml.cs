@@ -36,8 +36,12 @@ public partial class QuizLibraryScreen : UserControl
 
     private void deleteQuizClick(string QuizTitle)
     {
-        bool result = QuizDataHandler.DeleteQuiz(QuizTitle);
-        if (result) InitQuizScrollView();
+        var dialog = Dialog.AreYouSure( MainGrid, $"When you press the confim button the quiz '{QuizTitle}' will be deleted.", () =>
+        {
+            bool result = QuizDataHandler.DeleteQuiz(QuizTitle);
+            if (result) InitQuizScrollView();
+        });
+        MainGrid.Children.Add(dialog);
     }
 
 
@@ -48,7 +52,7 @@ public partial class QuizLibraryScreen : UserControl
 
     public void CreateNewQuizClick(object? sender, RoutedEventArgs e)
     {
-        var (newQuizDialog, titleBox) = Dialog.CreateNewQuiz(MainGrid, title =>
+        var (newQuizDialog, titleBox) = Dialog.CreateNewQuiz(MainGrid, "Add Quiz", "Title", title =>
         {
             QuizDataHandler.CreateQuiz(title);
 
