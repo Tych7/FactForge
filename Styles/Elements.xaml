@@ -5,7 +5,7 @@
         <!-- Neon Underline -->
         <Style Selector="Border.neon-underline">
             <Setter Property="BorderBrush" Value="#00FFFF"/>
-            <Setter Property="BorderThickness" Value="0,0,0,5"/>
+            <Setter Property="BorderThickness" Value="0,0,0,4"/>
             <Setter Property="Effect">
                 <DropShadowEffect 
                     Color="#00FFFF"
@@ -32,5 +32,37 @@
                     OffsetY="0"/>
             </Setter>
         </Style>
+
+        <!-- Neon Dropdown Style -->
+        <Style Selector="ComboBox.neon-dropdown">
+            <Setter Property="Background" Value="#000000"/>
+            <Setter Property="BorderBrush" Value="#00FFFF"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderThickness" Value="5"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="25"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+        <Style Selector="ComboBox.neon-dropdown TextBlock">
+            <Setter Property="Foreground" Value="#8C52FF"/>
+            <Setter Property="FontFamily" Value="{StaticResource OrbitronRegular}"/>
+            <Setter Property="Padding" Value="20 0"/>
+        </Style>
+
+
+        <Style Selector="ComboBox.neon-dropdown ContentPresenter">
+            <Setter Property="Foreground" Value="#8C52FF"/>
+            <Setter Property="FontFamily" Value="{StaticResource OrbitronRegular}"/>
+            <Setter Property="Padding" Value="20 0"/>
+        </Style>
+
+
+        
 
 </Styles>

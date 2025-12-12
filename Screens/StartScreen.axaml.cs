@@ -58,6 +58,16 @@ public partial class StartScreen : UserControl
         }
     }
 
+    private void ToSettingsClick(object? sender, RoutedEventArgs e)
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            if (desktop.MainWindow is MainWindow mainWindow)
+            {
+                mainWindow.MainContent.Content = new Settings();
+            }
+        }
+    }
 
 
     private void ExitClick(object? sender, RoutedEventArgs args)

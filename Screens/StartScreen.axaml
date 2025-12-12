@@ -31,17 +31,26 @@
                 Content="SEND"
             />
 
-            <Button 
-                Name="QuizLibrary"
-                Height = "80" 
-                Classes="neon-text-button" 
-                Content="LIBRARY" 
-                Click="ToLibraryScreenClick"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Center"
-                Margin="0,0,0,100"
-                Foreground= "#8C52FF"
-            />
+            <StackPanel Orientation = "Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin = "0,0,0,100">
+                <Button 
+                    Height = "80" 
+                    Classes="neon-text-button" 
+                    Content="LIBRARY" 
+                    Click="ToLibraryScreenClick"
+                    Foreground= "#8C52FF"
+                />
+
+                <Button 
+                    Height = "80" 
+                    Classes="neon-text-button" 
+                    Content="SETTINGS" 
+                    Click="ToSettingsClick"
+                    Margin="20,0,0,0"
+                    Foreground= "#8C52FF"
+                />
+            
+            </StackPanel>
+            
 
 
             <Image x:Name="QrImageControl" Width="200" Height="200"/>
