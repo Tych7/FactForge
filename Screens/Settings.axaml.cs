@@ -9,11 +9,11 @@ namespace DesktopApp;
 
 public partial class Settings : UserControl
 {
-    private WindowModes currentWindowMode;
+    private DisplayMode currentWindowMode;
     public Settings()
     {
         InitializeComponent();
-        
+
         AttachedToVisualTree += (_, __) =>
         {
             currentWindowMode = GetCurrentWindowMode();
@@ -24,7 +24,7 @@ public partial class Settings : UserControl
 
     private void InitSettings()
     {
-        List<string> options = [WindowModes.FullScreen.ToString(), WindowModes.Windowed.ToString()];
+        List<string> options = [DisplayMode.FullScreen.ToString(), DisplayMode.Windowed.ToString()];
         Border dropdownBorder = DropdownElement.Create(options, currentWindowMode.ToString(), 500, 50, OnSelectedWindowMode);
 
         FullscreenSetting.Children.Add(dropdownBorder);
@@ -35,10 +35,10 @@ public partial class Settings : UserControl
         switch (selected)
         {
             case "FullScreen":
-                currentWindowMode = WindowModes.FullScreen;
+                currentWindowMode = DisplayMode.FullScreen;
                 break;
             case "Windowed":
-                currentWindowMode = WindowModes.Windowed;
+                currentWindowMode = DisplayMode.Windowed;
                 break;
         }
     }
@@ -68,13 +68,13 @@ public partial class Settings : UserControl
         else window.WindowState = WindowState.FullScreen;
     }
 
-    private WindowModes GetCurrentWindowMode()
+    private DisplayMode GetCurrentWindowMode()
     {
         var window = VisualRoot as Window;
         if (window == null)
-            return WindowModes.Unknown;
+            return DisplayMode.Unknown;
 
-        return window.WindowState == WindowState.FullScreen ? WindowModes.FullScreen : WindowModes.Windowed;
+        return window.WindowState == WindowState.FullScreen ? DisplayMode.FullScreen : DisplayMode.Windowed;
     }
     
 }

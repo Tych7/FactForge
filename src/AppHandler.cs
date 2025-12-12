@@ -7,7 +7,7 @@ namespace DesktopApp;
 
 public class AppHandler
 {
-    public enum WindowModes
+    public enum DisplayMode
     {
         Unknown,
         FullScreen,
@@ -19,14 +19,14 @@ public class AppHandler
 
     }
 
-    public static void ChangeDisplayMode(Window window, WindowModes mode)
+    public static void ChangeDisplayMode(Window window, DisplayMode mode)
     {
         switch (mode)
         {
-            case WindowModes.FullScreen:
+            case DisplayMode.FullScreen:
                 window.WindowState = WindowState.FullScreen;
                 break;
-            case WindowModes.Windowed:
+            case DisplayMode.Windowed:
                 window.WindowState = WindowState.Normal;
                 break;
         }
