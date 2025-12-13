@@ -25,16 +25,11 @@ public partial class QuizLibraryScreen : UserControl
 
     private void AddNewQuizInstance(string QuizTitle)
     {
-        var quizLibScrollElement = QuizLibScrollElement.Create(QuizTitle, deleteQuizClick, editQuizClick);
+        var quizLibScrollElement = QuizLibScrollElement.Create(QuizTitle, DeleteQuizClick, EditQuizClick);
         QuizListPanel.Children.Add(quizLibScrollElement);
     }
 
-    private void editQuizClick(string QuizTitle)
-    {
-        Console.WriteLine("edit button clicked!");
-    }
-
-    private void deleteQuizClick(string QuizTitle)
+    private void DeleteQuizClick(string QuizTitle)
     {
         var dialog = Dialog.AreYouSure( MainGrid, $"When you press the confim button the quiz '{QuizTitle}' will be deleted.", () =>
         {
@@ -64,6 +59,15 @@ public partial class QuizLibraryScreen : UserControl
         });
 
         MainGrid.Children.Add(newQuizDialog);
+    }
+
+    private void EditQuizClick(string QuizTitle)
+    {
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                //Navigate to Create Quiz screen
+                if (desktop.MainWindow is MainWindow mainWindow) mainWindow.MainContent.Content = new CreateQuizScreen(QuizTitle);
+            }
     }
 
     private void BackClick(object? sender, RoutedEventArgs e)

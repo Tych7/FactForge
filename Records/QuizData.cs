@@ -13,7 +13,7 @@ public record QuizData
     public required string Title { get; set; }
 
     [JsonPropertyName("quiz")]
-    public required List<QuizQuestion> Quiz { get; set; }
+    public required List<QuizSlide> Quiz { get; set; }
 
     [JsonPropertyName("timestamp")]
     public required string Timestamp { get; set; }

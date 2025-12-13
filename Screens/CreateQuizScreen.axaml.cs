@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -8,15 +9,48 @@ namespace DesktopApp;
 
 public partial class CreateQuizScreen : UserControl
 {
+    private ModifyQuizHandler modifyQuizHandler = new();
     public CreateQuizScreen()
     {
         InitializeComponent();
     }
 
+    public CreateQuizScreen(string quizTitle)
+    {
+        InitializeComponent();
+        LoadSlides(quizTitle);
+    }
+
+    private void LoadSlides(string quizTitle)
+    {
+        modifyQuizHandler.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
+        QuizOverview.Child = modifyQuizHandler.CreateQuizOverview();
+    }
+
     private void NewPageClick(object? sender, RoutedEventArgs e)
     {
-        var openQuestion = new OpenQuestionElement();
-        Quizpage.Children.Add(openQuestion.Create());
+        
+    }
+
+    private void OpenPanelClick(object? sender, RoutedEventArgs e)
+    {
+        StackPanel test = new StackPanel{};
+
+        for(int i = 0; i < 20; i++)
+        {
+            TextBlock testText = new TextBlock
+            {
+                Text = "test",
+                Classes = { "neon-text" },
+                Margin = new Thickness(0, 20, 0, 0),
+                FontSize = 50
+            };
+            test.Children.Add(testText);
+        }
+
+
+        var optionPanel = SlidingPanelElement.Create(MainGrid, test, "OPTIONS", 500);
+        MainGrid.Children.Add(optionPanel);
     }
 
     private void BackClick(object? sender, RoutedEventArgs e)

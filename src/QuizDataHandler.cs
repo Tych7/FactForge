@@ -9,7 +9,7 @@ public static class QuizDataHandler
 {
     static QuizDataHandler(){}
 
-    public static void CreateQuiz(string title, List<QuizQuestion>? questions = null)
+    public static void CreateQuiz(string title, List<QuizSlide>? questions = null)
     {
         var quizPath = Path.Combine(Environment.CurrentDirectory, "Data", "Quizzen");
 
@@ -21,7 +21,7 @@ public static class QuizDataHandler
             Id = GetFirstAvailibleQuizId(),
             Favorite = false,
             Title = title,
-            Quiz = questions ?? new List<QuizQuestion>(),
+            Quiz = questions ?? new List<QuizSlide>(),
             Timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
         };
 
@@ -61,6 +61,30 @@ public static class QuizDataHandler
         {
             Console.WriteLine($"Error deleting quiz '{title}': {ex.Message}");
             return false;
+        }
+    }
+
+    public static List<QuizSlide> GetAllQuizSlides(string quizTitle)
+    {
+        var filePath = GetFileNameByTitle(quizTitle);
+
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            Console.WriteLine($"Quiz '{quizTitle}' not found.");
+            return new List<QuizSlide>();
+        }
+
+        try
+        {
+            var json = File.ReadAllText(filePath);
+            var quizData = JsonSerializer.Deserialize<QuizData>(json);
+
+            return quizData?.Quiz ?? new List<QuizSlide>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reading quiz '{quizTitle}': {ex.Message}");
+            return new List<QuizSlide>();
         }
     }
 
