@@ -9,22 +9,32 @@ namespace DesktopApp;
 
 public partial class CreateQuizScreen : UserControl
 {
-    private ModifyQuizHandler modifyQuizHandler = new();
+    private ModifyQuizHandler? modifyQuizHandler;
     public CreateQuizScreen()
     {
         InitializeComponent();
+        modifyQuizHandler = new ModifyQuizHandler();
+        modifyQuizHandler.SetQuizPageGrid(Quizpage);
     }
 
     public CreateQuizScreen(string quizTitle)
     {
         InitializeComponent();
+
+        modifyQuizHandler = new ModifyQuizHandler();
+        modifyQuizHandler.SetQuizPageGrid(Quizpage);
+
         LoadSlides(quizTitle);
+
     }
 
     private void LoadSlides(string quizTitle)
     {
-        modifyQuizHandler.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
-        QuizOverview.Child = modifyQuizHandler.CreateQuizOverview();
+        if(modifyQuizHandler != null)
+        {
+            modifyQuizHandler.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
+            QuizOverview.Child = modifyQuizHandler.CreateQuizOverview();
+        }
     }
 
     private void NewPageClick(object? sender, RoutedEventArgs e)

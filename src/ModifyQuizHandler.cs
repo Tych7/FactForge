@@ -10,14 +10,13 @@ public class ModifyQuizHandler
 {
     public List<QuizSlide>? slides;
 
-    public List<QuizSlide>? openQuestions;
-    public List<QuizSlide>? multipleChoiseQuestions;
-    public List<QuizSlide>? Text;
+    private  Grid? quizPageGrid;
 
+    public ModifyQuizHandler() {}
 
-    public ModifyQuizHandler()
+    public void SetQuizPageGrid(Grid grid)
     {
-
+        quizPageGrid = grid;
     }
 
     public ScrollViewer CreateQuizOverview()
@@ -73,9 +72,8 @@ public class ModifyQuizHandler
 
     private Button CreateQuizOverviewButton(int slideId, string content)
     {
-        return new Button
+        Button quizOverviewButton = new Button
         {
-            Name = slideId.ToString(),
             Content = content,
             Classes = {"neon-text-button"},
             Margin = new Avalonia.Thickness(10,10,10,0),
@@ -84,7 +82,46 @@ public class ModifyQuizHandler
             Foreground = new SolidColorBrush(Color.Parse("#8C52FF"))
         };
 
-        
+        quizOverviewButton.Click += (_, _) => SetCurrentSelectedSlide(slideId);
+        return quizOverviewButton;
     } 
+
+    private void SetCurrentSelectedSlide(int slideId)
+    {
+        if(slides != null)
+        {
+            foreach (QuizSlide slide in slides)
+            {
+                if(slide.Id == slideId)
+                {
+                    Grid SlideToShow = ModifySlideElement.CreateTextSlide(slide);;
+
+                    switch (slide.Type)
+                    {
+                        case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
+                            SlideToShow = ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide);
+                            break;
+
+                        case var t when t == SlideTypes.OpenQuestion.ToString():
+                            SlideToShow = ModifySlideElement.CreateOpenQuestionSlide(slide);
+                            break;
+                    }
+
+                    if(quizPageGrid != null)
+                    {
+                        quizPageGrid.Children.Clear();
+                        if (SlideToShow != null) quizPageGrid.Children.Add(SlideToShow);
+                    }
+                    
+                    break;  
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("No questions sorted, slides is null");
+        }
+
+    }
 
 }

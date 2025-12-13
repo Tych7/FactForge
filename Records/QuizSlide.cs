@@ -31,5 +31,11 @@ public record QuizSlide
 
     [JsonPropertyName("category")]
     public string? Category { get; set; }
+
+    [JsonPropertyName("imagePath")]
+    public string? ImagePath { get; set; }
+
+    [JsonPropertyName("audioPath")]
+    public string? AudioPath { get; set; }
     
 }

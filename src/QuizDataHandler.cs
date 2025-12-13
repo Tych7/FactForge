@@ -64,6 +64,20 @@ public static class QuizDataHandler
         }
     }
 
+    public static QuizSlide GetSlideById(string quizTitle, int id)
+    {
+        QuizSlide returnSlide = new QuizSlide();
+        List<QuizSlide> slides = GetAllQuizSlides(quizTitle);
+
+        foreach(QuizSlide slide in slides)
+        {
+            if (slide.Id == id) returnSlide = slide;
+            break;
+        }
+
+        return returnSlide;
+    }
+
     public static List<QuizSlide> GetAllQuizSlides(string quizTitle)
     {
         var filePath = GetFileNameByTitle(quizTitle);
