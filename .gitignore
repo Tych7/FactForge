@@ -12,5 +12,10 @@ obj/
 .vscode/
 
 # Quiz data
-Data/Quizzen/
+Data/Quizzen/*
+!Data/Quizzen/.gitkeep
+
+Data/QuizResults/*
+!Data/QuizResults/.gitkeep
+
 
