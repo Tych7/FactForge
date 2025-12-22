@@ -1,13 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using Tmds.DBus.Protocol;
 
 namespace DesktopApp;
 
 public static class QuizDataHandler
 {
     static QuizDataHandler(){}
+
+    private static QuizSlide defaultSlide = new QuizSlide
+    {
+        Id = 0,
+        Type = "MultipleChoiceQuestion",
+        Question = string.Empty,
+        Answers = [string.Empty, string.Empty, string.Empty, string.Empty],
+        CorrectAnswer = string.Empty,
+        Time = 15,
+        BgImagePath = "avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png",
+        Category = string.Empty,
+        ImagePath = string.Empty,
+        AudioPath = string.Empty
+    };
 
     public static void CreateQuiz(string title, List<QuizSlide>? questions = null)
     {
@@ -63,6 +79,47 @@ public static class QuizDataHandler
             return false;
         }
     }
+
+    public static bool CreateNewQuestion(string quizTitle)
+    {
+        var filePath = GetFileNameByTitle(quizTitle);
+
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            Console.WriteLine($"Quiz '{quizTitle}' not found.");
+            return false;
+        }
+
+        try
+        {
+            var json = File.ReadAllText(filePath);
+            var quizData = JsonSerializer.Deserialize<QuizData>(json);
+            var slide = defaultSlide;
+
+            if (quizData == null)
+                return false;
+
+            // Assign next available question ID
+            int nextId = quizData.Quiz.Count == 0 ? 1 : quizData.Quiz.Max(q => q.Id) + 1;
+            slide.Id = nextId;
+
+            quizData.Quiz.Add(slide);
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var updatedJson = JsonSerializer.Serialize(quizData, options);
+
+            File.WriteAllText(filePath, updatedJson);
+
+            Console.WriteLine($"Question added to quiz '{quizTitle}'.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding question: {ex.Message}");
+            return false;
+        }
+    }
+
 
     public static QuizSlide GetSlideById(string quizTitle, int id)
     {

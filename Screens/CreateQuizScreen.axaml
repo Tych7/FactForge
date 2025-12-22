@@ -10,63 +10,38 @@
                 <ImageBrush Source="avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png" Stretch="UniformToFill"/>
             </Grid.Background>
 
-            <StackPanel Orientation="Horizontal">
-                <Button
-                    Name="BackButton" 
-                    Classes="neon-icon-button"
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" 
-                    Click="BackClick">
-                    <Image Source="avares://DesktopApp/Assets/Icons/arrow.png"
-                        Stretch="Uniform"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"/>
-                </Button>
+            <Button
+                Name="BackButton" 
+                Width="96"
+                Classes="neon-icon-button"
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Click="BackClick">
+                <Image Source="avares://DesktopApp/Assets/Icons/arrow.png"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+            </Button>
 
-                <Button
-                    Name="NewPageButton" 
-                    Classes="neon-icon-button"
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" 
-                    Click="NewPageClick">
-                    <Image Source="avares://DesktopApp/Assets/Icons/plus.png"
-                        Stretch="Uniform"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"/>
-                </Button>
-
-                <Button 
-                    Height = "80" 
-                    Classes="neon-text-button" 
-                    Content="OPEN PANEL" 
-                    Click="OpenPanelClick"
-                    Margin="20,0,0,0"
-                    Foreground= "#8C52FF"
-                    HorizontalAlignment="Left" 
-                    VerticalAlignment="Top" 
-                />
-            </StackPanel>
+            <Button
+                Name="NewPageButton" 
+                Width="96"
+                Classes="neon-icon-button"
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Click="NewPageClick"
+                Margin="96,0,0,0">
+                <Image Source="avares://DesktopApp/Assets/Icons/plus.png"
+                    Stretch="Uniform"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+            </Button>
             
-
-            <StackPanel Height="972" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                <Border x:Name = "QuizOverview" Classes="neon-frame" Height="972" >
-
-                </Border>
-
-                <Border Classes="neon-frame" Height="972" Width="1728" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                    <Grid x:Name="Quizpage">
-                    
-                    </Grid>
-                </Border>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="1080">
+                <Border x:Name = "QuizOverview" Classes="neon-frame" Height="972" Width="192" VerticalAlignment="Bottom"/>
+                <Grid x:Name="Quizpage" Width="1728" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
             </StackPanel>
 
-            
-
-
-
-
-
-            
         </Grid>
     </Viewbox>         
 </UserControl>

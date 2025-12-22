@@ -7,7 +7,7 @@ namespace DesktopApp
 {
     public static class DropdownElement
     {
-        public static Border Create( IEnumerable<string> options, string defaultValue, int width, int height, Action<string> onSelect)
+        public static (Border dropDownElement, ComboBox dropDown) Create( IEnumerable<string> options, string defaultValue, int width, int height)
         {
             Border elementBorder = new Border
             {
@@ -15,8 +15,6 @@ namespace DesktopApp
                 Width = width,
                 BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
             };
-
-            Grid mainGrid = new Grid{};
 
             ComboBox dropdown = new ComboBox
             {
@@ -27,24 +25,12 @@ namespace DesktopApp
                 Classes = { "neon-dropdown" },
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                FontSize = height * 0.5
             };
 
-            dropdown.SizeChanged += (_, e) =>
-            {
-                dropdown.FontSize = e.NewSize.Height * 0.5;
-            };
+            elementBorder.Child = dropdown;
 
-            dropdown.SelectionChanged += (_, __) =>
-            {
-                if (dropdown.SelectedItem is string selected)
-                    onSelect?.Invoke(selected);
-            };
-
-            mainGrid.Children.Add(dropdown);
-
-            elementBorder.Child = mainGrid;
-
-            return elementBorder;
+            return (elementBorder, dropdown);
         }
     }
 }

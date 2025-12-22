@@ -29,6 +29,9 @@ public record QuizSlide
     [JsonPropertyName("time")]
     public int? Time { get; set; }
 
+    [JsonPropertyName("bgImagePath")]
+    public string? BgImagePath { get; set; }
+
     [JsonPropertyName("category")]
     public string? Category { get; set; }
 

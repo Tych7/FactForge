@@ -12,8 +12,13 @@ namespace DesktopApp
     public static class SlidingPanelElement
     {
         private static int transitionDuration = 300;
-        public static Border Create(Grid parentGrid, StackPanel scrollFeatureContent, string header, int width)
+        private static bool _isOpen = false;
+        public static Border? Create(Grid parentGrid, StackPanel scrollFeatureContent, string header, int width)
         {
+            if (_isOpen) return null;
+
+            _isOpen = true;
+
             var translate = new TranslateTransform
             {
                 X = width,
@@ -81,10 +86,13 @@ namespace DesktopApp
             var closeButton = AddCloseButton("Close", width - 40);
             closeButton.Click += async (sender, e) =>
             {
-                 translate.X = width;
+                translate.X = width;
                 await Task.Delay(transitionDuration);
+
                 parentGrid.Children.Remove(elementBorder);
+                _isOpen = false;
             };
+
             mainGrid.Children.Add(closeButton);
 
             elementBorder.Child = mainGrid;

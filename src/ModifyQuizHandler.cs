@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using static QuizSlide;
 
 namespace DesktopApp;
@@ -9,8 +11,11 @@ namespace DesktopApp;
 public class ModifyQuizHandler
 {
     public List<QuizSlide>? slides;
-
+    public QuizSlide? currentSelectedSlide;
+    private readonly Dictionary<int, Button> overviewButtons = new();
     private  Grid? quizPageGrid;
+    private CurrentSlideData? returnData;
+
 
     public ModifyQuizHandler() {}
 
@@ -19,7 +24,7 @@ public class ModifyQuizHandler
         quizPageGrid = grid;
     }
 
-    public ScrollViewer CreateQuizOverview()
+    public ScrollViewer InitQuizOverview()
     {
         int textIndex = 1;
         int questionIndex = 1;
@@ -37,17 +42,17 @@ public class ModifyQuizHandler
                 switch (slide.Type)
                 {
                     case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
-                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"Q{questionIndex}"));
+                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
                     case var t when t == SlideTypes.OpenQuestion.ToString():
-                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"Q{questionIndex}"));
+                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
                     case var t when t == SlideTypes.Text.ToString():
-                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"T{textIndex}"));
+                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"T{textIndex}", textIndex));
                         textIndex++;
                         break;
                 }
@@ -65,63 +70,124 @@ public class ModifyQuizHandler
             Content = quizOverviewPanel
         };
 
+        OpenFirstSlide();
 
         return quizOverview;
 
     }
 
-    private Button CreateQuizOverviewButton(int slideId, string content)
+    private void OpenFirstSlide()
     {
-        Button quizOverviewButton = new Button
-        {
-            Content = content,
-            Classes = {"neon-text-button"},
-            Margin = new Avalonia.Thickness(10,10,10,0),
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-            Height = 80,
-            Foreground = new SolidColorBrush(Color.Parse("#8C52FF"))
-        };
+        if (slides == null || slides.Count == 0)
+            return;
 
-        quizOverviewButton.Click += (_, _) => SetCurrentSelectedSlide(slideId);
-        return quizOverviewButton;
-    } 
+        int questionIndex = 1;
+        int textIndex = 1;
 
-    private void SetCurrentSelectedSlide(int slideId)
-    {
-        if(slides != null)
+        foreach (QuizSlide slide in slides)
         {
-            foreach (QuizSlide slide in slides)
+            switch (slide.Type)
             {
-                if(slide.Id == slideId)
-                {
-                    Grid SlideToShow = ModifySlideElement.CreateTextSlide(slide);;
+                case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
+                    SetCurrentSelectedSlide(slide.Id, questionIndex);
+                    currentSelectedSlide = slide;
+                    return;
 
-                    switch (slide.Type)
-                    {
-                        case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
-                            SlideToShow = ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide);
-                            break;
+                case var t when t == SlideTypes.OpenQuestion.ToString():
+                    SetCurrentSelectedSlide(slide.Id, questionIndex);
+                    currentSelectedSlide = slide;
+                    return;
 
-                        case var t when t == SlideTypes.OpenQuestion.ToString():
-                            SlideToShow = ModifySlideElement.CreateOpenQuestionSlide(slide);
-                            break;
-                    }
-
-                    if(quizPageGrid != null)
-                    {
-                        quizPageGrid.Children.Clear();
-                        if (SlideToShow != null) quizPageGrid.Children.Add(SlideToShow);
-                    }
-                    
-                    break;  
-                }
+                case var t when t == SlideTypes.Text.ToString():
+                    SetCurrentSelectedSlide(slide.Id, textIndex);
+                    currentSelectedSlide = slide;
+                    return;
             }
         }
-        else
-        {
-            Console.WriteLine("No questions sorted, slides is null");
-        }
-
+        
+        UpdateSelectedButtonBorder();
     }
 
+    private Button CreateQuizOverviewButton(int slideId, string content, int slideTypeIndex)
+    {
+        var button = new Button
+        {
+            Content = content,
+            Classes = { "neon-text-button" },
+            Margin = new Thickness(10,10,10,0),
+            Height = 80,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            Foreground = new SolidColorBrush(Color.Parse("#8C52FF")),
+            BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
+        };
+
+        button.Click += (_, _) => SetCurrentSelectedSlide(slideId, slideTypeIndex);
+
+        overviewButtons[slideId] = button;
+        return button;
+    }
+
+
+    private void WriteNewQuestionData()
+    {
+        Console.WriteLine(returnData?.Question?.Text);
+        foreach(TextBox awnser in returnData?.Answers ?? [])
+        {
+            Console.WriteLine(awnser.Text);
+        }
+        Console.WriteLine(returnData?.Time?.SelectedValue);
+    }
+
+    private void SetCurrentSelectedSlide(int slideId, int slideTypeIndex)
+    {
+        if (slides == null)
+            return;
+
+        foreach (var slide in slides)
+        {
+            if (slide.Id != slideId)
+                continue;
+
+            // Save outgoing slide data
+            WriteNewQuestionData();
+
+            currentSelectedSlide = slide;
+            UpdateSelectedButtonBorder();
+
+            Grid slideToShow;
+
+            switch (slide.Type)
+            {
+                case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
+                    (slideToShow, returnData) =
+                        ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide, slideTypeIndex);
+                    break;
+
+                case var t when t == SlideTypes.OpenQuestion.ToString():
+                    slideToShow =
+                        ModifySlideElement.CreateOpenQuestionSlide(slide, slideTypeIndex);
+                    break;
+
+                default:
+                    slideToShow =
+                        ModifySlideElement.CreateTextSlide(slide);
+                    break;
+            }
+
+            quizPageGrid?.Children.Clear();
+            quizPageGrid?.Children.Add(slideToShow);
+            return;
+        }
+    }
+
+    private void UpdateSelectedButtonBorder()
+    {
+        foreach (var kvp in overviewButtons)
+        {
+            kvp.Value.BorderBrush =
+                kvp.Key == currentSelectedSlide?.Id
+                    ? new SolidColorBrush(Colors.White)
+                    : new SolidColorBrush(Color.Parse("#00FFFF"));
+        }
+    }
 }

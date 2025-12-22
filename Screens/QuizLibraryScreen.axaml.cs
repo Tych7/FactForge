@@ -54,7 +54,7 @@ public partial class QuizLibraryScreen : UserControl
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 //Navigate to Create Quiz screen
-                if (desktop.MainWindow is MainWindow mainWindow) mainWindow.MainContent.Content = new CreateQuizScreen();
+                if (desktop.MainWindow is MainWindow mainWindow) mainWindow.MainContent.Content = new CreateQuizScreen(title);
             }
         });
 

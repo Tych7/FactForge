@@ -9,13 +9,8 @@ namespace DesktopApp;
 
 public partial class CreateQuizScreen : UserControl
 {
+    private string? currentOpenQuizTitle;
     private ModifyQuizHandler? modifyQuizHandler;
-    public CreateQuizScreen()
-    {
-        InitializeComponent();
-        modifyQuizHandler = new ModifyQuizHandler();
-        modifyQuizHandler.SetQuizPageGrid(Quizpage);
-    }
 
     public CreateQuizScreen(string quizTitle)
     {
@@ -25,7 +20,7 @@ public partial class CreateQuizScreen : UserControl
         modifyQuizHandler.SetQuizPageGrid(Quizpage);
 
         LoadSlides(quizTitle);
-
+        currentOpenQuizTitle = quizTitle;
     }
 
     private void LoadSlides(string quizTitle)
@@ -33,35 +28,16 @@ public partial class CreateQuizScreen : UserControl
         if(modifyQuizHandler != null)
         {
             modifyQuizHandler.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
-            QuizOverview.Child = modifyQuizHandler.CreateQuizOverview();
+            QuizOverview.Child = modifyQuizHandler.InitQuizOverview();
         }
     }
 
     private void NewPageClick(object? sender, RoutedEventArgs e)
     {
-        
+        QuizDataHandler.CreateNewQuestion(currentOpenQuizTitle ?? "");
+        LoadSlides(currentOpenQuizTitle ?? "");
     }
 
-    private void OpenPanelClick(object? sender, RoutedEventArgs e)
-    {
-        StackPanel test = new StackPanel{};
-
-        for(int i = 0; i < 20; i++)
-        {
-            TextBlock testText = new TextBlock
-            {
-                Text = "test",
-                Classes = { "neon-text" },
-                Margin = new Thickness(0, 20, 0, 0),
-                FontSize = 50
-            };
-            test.Children.Add(testText);
-        }
-
-
-        var optionPanel = SlidingPanelElement.Create(MainGrid, test, "OPTIONS", 500);
-        MainGrid.Children.Add(optionPanel);
-    }
 
     private void BackClick(object? sender, RoutedEventArgs e)
     {
