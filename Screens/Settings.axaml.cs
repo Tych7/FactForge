@@ -25,7 +25,8 @@ public partial class Settings : UserControl
     private void InitSettings()
     {
         List<string> options = new List<string> { DisplayMode.FullScreen.ToString(), DisplayMode.Windowed.ToString() };
-        (Border dropDownElement, ComboBox dropDown) = DropdownElement.Create(options, currentWindowMode.ToString(), 500, 50);
+        (Border dropDownElement, ComboBox dropDown) = DropdownElement.Create(options, currentWindowMode.ToString(), 50);
+        dropDownElement.Width = 500;
 
         dropDown.SelectionChanged += (_, __) =>
         {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -7,12 +6,13 @@ namespace DesktopApp
 {
     public static class DropdownElement
     {
-        public static (Border dropDownElement, ComboBox dropDown) Create( IEnumerable<string> options, string defaultValue, int width, int height)
+        public static (Border dropDownElement, ComboBox dropDown) Create( IEnumerable<string> options, string defaultValue, int height)
         {
             Border elementBorder = new Border
             {
                 Height = height,
-                Width = width,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
             };
 
@@ -20,11 +20,9 @@ namespace DesktopApp
             {
                 SelectedItem = defaultValue,
                 ItemsSource = options,
-                Width = width,
-                Height = height,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 Classes = { "neon-dropdown" },
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 FontSize = height * 0.5
             };
 

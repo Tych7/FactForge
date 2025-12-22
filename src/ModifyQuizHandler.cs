@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using static QuizSlide;
 
 namespace DesktopApp;
@@ -73,7 +73,18 @@ public class ModifyQuizHandler
         OpenFirstSlide();
 
         return quizOverview;
+    }
 
+    public void WriteNewQuestionData()
+    {
+        Console.WriteLine($"Question {returnData?.Id}: {returnData?.Question?.Text}");
+        foreach(TextBox awnser in returnData?.Answers ?? [])
+        {
+            Console.WriteLine(awnser.Text);
+        }
+        Console.WriteLine($"Time: {returnData?.Time?.SelectedValue}");
+        Console.WriteLine($"Correct Answer: {returnData?.GetCurrentCorrectAnswer()}");
+        Console.WriteLine();
     }
 
     private void OpenFirstSlide()
@@ -104,7 +115,7 @@ public class ModifyQuizHandler
                     return;
             }
         }
-        
+
         UpdateSelectedButtonBorder();
     }
 
@@ -127,17 +138,6 @@ public class ModifyQuizHandler
         return button;
     }
 
-
-    private void WriteNewQuestionData()
-    {
-        Console.WriteLine(returnData?.Question?.Text);
-        foreach(TextBox awnser in returnData?.Answers ?? [])
-        {
-            Console.WriteLine(awnser.Text);
-        }
-        Console.WriteLine(returnData?.Time?.SelectedValue);
-    }
-
     private void SetCurrentSelectedSlide(int slideId, int slideTypeIndex)
     {
         if (slides == null)
@@ -148,7 +148,6 @@ public class ModifyQuizHandler
             if (slide.Id != slideId)
                 continue;
 
-            // Save outgoing slide data
             WriteNewQuestionData();
 
             currentSelectedSlide = slide;

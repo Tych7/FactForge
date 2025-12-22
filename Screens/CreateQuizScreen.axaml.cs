@@ -41,6 +41,8 @@ public partial class CreateQuizScreen : UserControl
 
     private void BackClick(object? sender, RoutedEventArgs e)
     {
+        modifyQuizHandler?.WriteNewQuestionData();
+        
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             if (desktop.MainWindow is MainWindow mainWindow)

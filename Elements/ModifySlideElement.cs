@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using static QuizSlide;
 
 
 namespace DesktopApp
@@ -19,38 +21,71 @@ namespace DesktopApp
 
         private static int selectedQuestionTime;
 
+        private static List<TextBox>? currentAwnserOptions;
+        public static string? currentCorrectAnswer;
 
-        private static ComboBox OpenPanelClick(Grid MainGrid)
+
+        private static (ComboBox timeDropDown, ComboBox awnserDropDown) OpenPanelClick(QuizSlide slide)
         {
             StackPanel slideOptions = new StackPanel();
 
-            
-            StackPanel timeOption = new StackPanel{Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Stretch, Margin = new Thickness(20,20,0,0)};
-            TextBlock timeTitle = new TextBlock {Text = "Time: ", Classes = {"neon-text"}, FontSize = 30,  VerticalAlignment= VerticalAlignment.Center}; timeOption.Children.Add(timeTitle);
+            //TIME OPTIONS
+            StackPanel timeOption = new StackPanel{Orientation = Orientation.Vertical, VerticalAlignment = VerticalAlignment.Stretch, Margin = new Thickness(0,20,0,0)};
+            TextBlock timeTitle = new TextBlock {Text = "Time: ", Classes = {"neon-text"}, FontSize = 40,  VerticalAlignment= VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left}; timeOption.Children.Add(timeTitle);
 
             var timeOptions = Enumerable.Range(1, 100).Select(i => i.ToString()).ToList();
-            (Border dropDownElement, ComboBox dropDown) = DropdownElement.Create(timeOptions, selectedQuestionTime.ToString() ?? "", 300, 50); timeOption.Children.Add(dropDownElement);
+            selectedQuestionTime = slide.Time ?? 0;
 
-            dropDown.SelectionChanged += (_, __) =>
+            (Border timeDropDownElement, ComboBox timeDropDown) = DropdownElement.Create(timeOptions, selectedQuestionTime.ToString() ?? "", 50); timeOption.Children.Add(timeDropDownElement);
+            timeDropDownElement.Margin = new Thickness(0,10,0,0);
+            timeDropDown.SelectionChanged += (_, __) =>
             {
-                if (dropDown.SelectedItem is string selected && int.TryParse(selected, out int value))
+                if (timeDropDown.SelectedItem is string selected && int.TryParse(selected, out int value))
                 {
                     selectedQuestionTime = value;
                 }
             };
-
             slideOptions.Children.Add(timeOption);
 
-            var optionPanel = SlidingPanelElement.Create(MainGrid, slideOptions, "OPTIONS", 500);
+            //CORRECT AWNSER OPTIONS
+            StackPanel correctAwnserOption = new StackPanel{Orientation = Orientation.Vertical, VerticalAlignment = VerticalAlignment.Stretch, Margin = new Thickness(0,20,0,0)};
+            ComboBox awnserDropDown = new ComboBox();
+            if (slide.Type == SlideTypes.MultipleChoiceQuestion.ToString())
+            {
+                TextBlock awnserTitle = new TextBlock {Text = "Correct Answer: ", Classes = {"neon-text"}, FontSize = 40,  VerticalAlignment= VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left}; correctAwnserOption.Children.Add(awnserTitle);
+                List<string> options = [];
+                foreach(var option in currentAwnserOptions ?? []) {options.Add(option.Text ?? "");}
+                (Border awnserDropDownElement, awnserDropDown) = DropdownElement.Create(options ?? [], currentCorrectAnswer ?? "", 50); correctAwnserOption.Children.Add(awnserDropDownElement);
+                awnserDropDownElement.Margin = new Thickness(0,10,0,0);
+                awnserDropDown.SelectionChanged += (_, __) =>
+                {
+                    if (awnserDropDown.SelectedItem is string selected)
+                    {
+                        currentCorrectAnswer = selected;
+                    }
+                };
+                slideOptions.Children.Add(correctAwnserOption);
+            }
 
-            if (optionPanel != null) MainGrid.Children.Add(optionPanel);
+            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as MainWindow;
 
-            return dropDown;
+            if (mainWindow != null)
+            {
+                var optionPanel = SlidingPanelElement.Create(mainWindow.ModalLayerContainer, slideOptions, "OPTIONS", 500);
+                if (optionPanel != null)
+                {
+                    mainWindow.ModalLayerContainer.IsHitTestVisible = true;
+                    mainWindow.ModalLayerContainer.Children.Add(optionPanel);
+                }
+            }
+
+            return (timeDropDown, awnserDropDown);
         }
 
         public static (Grid MultipleChoiceQuestionSlide, CurrentSlideData returnData) CreateMultipleChoiceQuestionSlide(QuizSlide slide, int questionNumber)
         {
             selectedQuestionTime = slide.Time ?? 0;
+            currentCorrectAnswer = slide.CorrectAnswer;
 
             Grid MainGrid = new Grid
             {
@@ -78,12 +113,13 @@ namespace DesktopApp
             };
 
             (Border QuizQuestion, TextBox questionText) = CreateQuizQuestionElement.Create(questionNumber, slide.Question ?? "", 200, VerticalAlignment.Top, false, "#FFFFFF", "#8C52FF");
+
             slideGrid.Children.Add(QuizQuestion);
 
-            List<TextBox> newOptions = [];
+            
             if(slide.Answers != null)
             {
-                (Grid MultipleChoiceOptions, newOptions) = MultipleChoiceOptionsElement.Create(slide.Answers, MultipleChoiceOptionColors, slide.Answers.Count, 400);
+                (Grid MultipleChoiceOptions, currentAwnserOptions) = MultipleChoiceOptionsElement.Create(slide.Answers, MultipleChoiceOptionColors, slide.Answers.Count, 400);
                 slideGrid.Children.Add(MultipleChoiceOptions);
             }
             slideBorder.Child = slideGrid;
@@ -107,8 +143,9 @@ namespace DesktopApp
                 Id = slide.Id,
                 Type = slide.Type,
                 Question = questionText,
-                Answers = newOptions,
-                CorrectAnswer = new TextBox(),
+                Answers = currentAwnserOptions,
+                CorrectAnswerComboBox = new ComboBox { SelectedValue = slide.CorrectAnswer?.ToString() },
+                Time = new ComboBox { SelectedValue = slide.Time?.ToString() },
                 BgImagePath = "",
                 Category = "",
                 ImagePath = "",
@@ -116,8 +153,11 @@ namespace DesktopApp
             };
             optionsButton.Click += (_, _) =>
             {
-                if (currentData != null) currentData.Time = OpenPanelClick(MainGrid);
+                if (currentData != null) {
+                    (currentData.Time, currentData.CorrectAnswerComboBox) = OpenPanelClick(slide);
+                }
             };
+            
             
             MainGrid.Children.Add(slideBorder);
 

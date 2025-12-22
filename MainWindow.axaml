@@ -2,38 +2,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="DesktopApp.MainWindow"
         Title="DesktopApp"
-        WindowState="FullScreen"
-        >
+        WindowState="FullScreen">
 
     <Viewbox Stretch="Uniform">
-        <ContentControl Name="MainContent">
-            <Grid Width="1920" Height="1080">
-                <Grid.Background>
-                    <ImageBrush Source="Assets/Backgrounds/BricksDesktop.png" Stretch="UniformToFill"/>
-                </Grid.Background>
+        <Grid Width="1920" Height="1080">
+            
+            <!-- Main content -->
+            <ContentControl Name="MainContent">
+                <Grid Width="1920" Height="1080">
+                    <Grid.Background>
+                        <ImageBrush Source="Assets/Backgrounds/BricksDesktop.png" Stretch="UniformToFill"/>
+                    </Grid.Background>
 
-                <Border Classes="neon-frame" Height="700" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0">
-                    <Image Source="Assets/Logos/Logo.png"
-                        Stretch="Uniform"
+                    <Border Classes="neon-frame" Height="700" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0">
+                        <Image Source="Assets/Logos/Logo.png"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                    </Border>
+
+                    <Button 
+                        Classes="neon-text-button"
+                        Height="80" 
+                        Content="START" 
+                        Click="StartClick"
+                        VerticalAlignment="Bottom"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        />
-                </Border>
+                        Margin="0,0,0,125"
+                        Foreground="#8C52FF"/>
+                </Grid>
+            </ContentControl>
 
-
-                <Button 
-                    Classes="neon-text-button"
-                    Height = "80" 
-                    Content="START" 
-                    Click="StartClick"
-                    VerticalAlignment="Bottom"
-                    HorizontalAlignment="Center"
-                    Margin="0,0,0,125"
-                    Foreground= "#8C52FF"
-                />
-
-
-            </Grid>
-        </ContentControl>
+            <!-- Modal / overlay layer -->
+            <Grid Name="ModalLayer"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  IsHitTestVisible="False"/>
+        </Grid>
     </Viewbox>
 </Window>

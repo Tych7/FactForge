@@ -13,7 +13,7 @@ namespace DesktopApp
     {
         private static int transitionDuration = 300;
         private static bool _isOpen = false;
-        public static Border? Create(Grid parentGrid, StackPanel scrollFeatureContent, string header, int width)
+        public static Grid? Create(Grid parentGrid, StackPanel scrollFeatureContent, string header, int width)
         {
             if (_isOpen) return null;
 
@@ -33,6 +33,19 @@ namespace DesktopApp
                 }
             };
 
+            Grid mainGrid = new Grid
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+
+            Border overlay = new Border
+            {
+                Background = new SolidColorBrush(Color.Parse("#99000000")),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            mainGrid.Children.Add(overlay);
 
             Border elementBorder = new Border
             {
@@ -49,7 +62,7 @@ namespace DesktopApp
                 RenderTransformOrigin = new RelativePoint(1, 0.5, RelativeUnit.Relative),
             };
 
-            Grid mainGrid = new Grid{};
+            Grid panelGrid = new Grid{};
 
             TextBlock Header = new TextBlock
             {
@@ -60,7 +73,7 @@ namespace DesktopApp
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0,10,0,0)
             };
-            mainGrid.Children.Add(Header);
+            panelGrid.Children.Add(Header);
 
             var optionsFame = new Border
             {
@@ -80,7 +93,7 @@ namespace DesktopApp
             };
             
             optionsFame.Child = scrollFeature;
-            mainGrid.Children.Add(optionsFame);
+            panelGrid.Children.Add(optionsFame);
 
 
             var closeButton = AddCloseButton("Close", width - 40);
@@ -89,13 +102,13 @@ namespace DesktopApp
                 translate.X = width;
                 await Task.Delay(transitionDuration);
 
-                parentGrid.Children.Remove(elementBorder);
+                parentGrid.Children.Remove(mainGrid);
                 _isOpen = false;
             };
 
-            mainGrid.Children.Add(closeButton);
+            panelGrid.Children.Add(closeButton);
 
-            elementBorder.Child = mainGrid;
+            elementBorder.Child = panelGrid;
 
             elementBorder.AttachedToVisualTree += (_, _) =>
             {
@@ -105,8 +118,10 @@ namespace DesktopApp
                 });
             };
 
+            mainGrid.Children.Add(elementBorder);
 
-            return elementBorder;
+
+            return mainGrid;
         }
 
         private static Button AddCloseButton(string content, double width)
