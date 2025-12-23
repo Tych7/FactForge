@@ -7,9 +7,9 @@ using Avalonia.Media;
 namespace DesktopApp;
 
 
-public static class CreateQuizQuestionElement{
+public static class CreateSlideHeaderElement{
 
-    public static (Border QuizQuestion, TextBox questionText) Create(int questionNumber, string text, int height, VerticalAlignment VerticalAlignment, bool textWrap, string borderColor, string textColor){
+    public static (Border SlideHeader, TextBox headerText) Create(int slideNumber, string text, int height, VerticalAlignment VerticalAlignment, bool textWrap, string borderColor, string textColor){
 
         var border = new Border
         {
@@ -33,10 +33,10 @@ public static class CreateQuizQuestionElement{
             )
         };
 
-        TextBox questionText = new TextBox
+        TextBox headerText = new TextBox
         {
             Text = text,
-            Watermark = "Question here...",
+            Watermark = "Header here...",
             BorderBrush = Brushes.Transparent,
             Background = Brushes.Transparent,
             Foreground = new SolidColorBrush(Color.Parse(textColor)),
@@ -48,12 +48,12 @@ public static class CreateQuizQuestionElement{
             Margin = new Thickness(20),
         };
 
-        if (textWrap) questionText.Classes.Add("no-scroll");
+        if (textWrap) headerText.Classes.Add("no-scroll");
         
-        ElementHander.AutoFitTextBox(questionText, textWrap);
+        ElementHander.AutoFitTextBox(headerText, textWrap);
 
-        border.Child = questionText;
+        border.Child = headerText;
 
-        return (border, questionText);
+        return (border, headerText);
     }
 }

@@ -78,33 +78,41 @@ public class ModifyQuizHandler
 
     public void WriteNewQuestionData()
     {
-        // Console.WriteLine($"Question {returnData?.Id}: {returnData?.Question?.Text}");
-        // foreach(TextBox awnser in returnData?.Answers ?? [])
-        // {
-        //     Console.WriteLine(awnser.Text);
-        // }
-        // Console.WriteLine($"Time: {returnData?.Time?.SelectedValue}");
-        
-        // Console.WriteLine($"Correct Answer: {returnData?.GetCurrentCorrectAnswer()}");
-        // Console.WriteLine();
-
-        List<string> newAnswers = [];
-        foreach(TextBox awnser in returnData?.Answers ?? []) newAnswers.Add(awnser.Text ?? "");
         if (returnData != null && ElementHander.currentOpenQuizTitle != null)
         {
-            QuizSlide slide = new QuizSlide
+            QuizSlide slide;
+            if (returnData.Type == SlideTypes.Text.ToString())
             {
-                Id = returnData.Id,
-                Type = returnData.Type,
-                Question = returnData.Question?.Text,
-                Answers = newAnswers,
-                CorrectAnswer = returnData.GetCurrentCorrectAnswer(),
-                Time = int.Parse(returnData.Time?.SelectedValue?.ToString() ?? ""),
-                BgImagePath = returnData.BgImagePath,
-                Category = returnData.Category,
-                ImagePath = returnData.ImagePath,
-                AudioPath = returnData.AudioPath
-            };
+                slide = new QuizSlide
+                {
+                    Id = returnData.Id,
+                    Type = returnData.Type,
+                    Header = returnData.Header?.Text,
+                    SubText = returnData.SubText?.Text,
+                    BgImagePath = returnData.BgImagePath,
+                    Category = returnData.Category,
+                    ImagePath = returnData.ImagePath,
+                    AudioPath = returnData.AudioPath
+                };
+            }
+            else
+            {
+                List<string> newAnswers = [];
+                foreach (TextBox awnser in returnData.Answers ?? []) newAnswers.Add(awnser.Text ?? "");
+                slide = new QuizSlide
+                {
+                    Id = returnData.Id,
+                    Type = returnData.Type,
+                    Question = returnData.Question?.Text,
+                    Answers = newAnswers,
+                    CorrectAnswer = returnData.GetCurrentCorrectAnswer(),
+                    Time = int.Parse(returnData.Time?.SelectedValue?.ToString() ?? ""),
+                    BgImagePath = returnData.BgImagePath,
+                    Category = returnData.Category,
+                    ImagePath = returnData.ImagePath,
+                    AudioPath = returnData.AudioPath
+                };
+            }
             QuizDataHandler.UpdateSlide(ElementHander.currentOpenQuizTitle, slide);
             slides = QuizDataHandler.GetAllQuizSlides(ElementHander.currentOpenQuizTitle);
         }
@@ -196,7 +204,7 @@ public class ModifyQuizHandler
                     break;
 
                 default:
-                    slideToShow =
+                    (slideToShow, returnData) =
                         ModifySlideElement.CreateTextSlide(slide);
                         currentSelectedSlideTypeIndex = $"T{slideTypeIndex}";
                     break;

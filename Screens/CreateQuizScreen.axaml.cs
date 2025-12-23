@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
+using static QuizSlide;
 
 namespace DesktopApp;
 
@@ -33,8 +34,20 @@ public partial class CreateQuizScreen : UserControl
 
     private void NewPageClick(object? sender, RoutedEventArgs e)
     {
-        QuizDataHandler.CreateNewSlide(ElementHander.currentOpenQuizTitle ?? "");
-        LoadSlides(ElementHander.currentOpenQuizTitle ?? "");
+        List<string> TypeOptions = [];
+        foreach (SlideTypes type in Enum.GetValues(typeof(SlideTypes))) TypeOptions.Add(type.ToString());
+        (Grid dialogGrid, ComboBox slideTypeInput) = Dialog.CreateNewQuizSlide(MainGrid, "Add new slide", "Type", TypeOptions, SlideTypes.Text.ToString(), (selectedType) =>
+        {
+            foreach (SlideTypes type in Enum.GetValues(typeof(SlideTypes)))
+            {
+                if(type.ToString() == selectedType)
+                {
+                    QuizDataHandler.CreateNewSlide(ElementHander.currentOpenQuizTitle ?? "", type);
+                    LoadSlides(ElementHander.currentOpenQuizTitle ?? "");
+                }
+            }
+        });
+        MainGrid.Children.Add(dialogGrid);
     }
 
     private void DeletePageClick(object? sender, RoutedEventArgs e)

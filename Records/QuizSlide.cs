@@ -17,6 +17,12 @@ public record QuizSlide
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 
+    [JsonPropertyName("header")]
+    public string? Header { get; set; }
+
+    [JsonPropertyName("subText")]
+    public string? SubText { get; set; }
+
     [JsonPropertyName("question")]
     public string? Question { get; set; }
 

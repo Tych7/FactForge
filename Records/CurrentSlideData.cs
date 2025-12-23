@@ -10,6 +10,10 @@ public record CurrentSlideData
 
     public string? Type { get; set; }
 
+    public TextBox? Header { get; set; }
+
+    public TextBox? SubText { get; set; }
+
     public TextBox? Question { get; set; }
 
     public List<TextBox>? Answers { get; set; }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using Tmds.DBus.Protocol;
+using static QuizSlide;
 
 namespace DesktopApp;
 
@@ -11,14 +12,26 @@ public static class QuizDataHandler
 {
     static QuizDataHandler(){}
 
-    private static QuizSlide defaultSlide = new QuizSlide
+    private static QuizSlide defaultQuestionSlide = new QuizSlide
     {
         Id = 0,
-        Type = "MultipleChoiceQuestion",
+        Type = "",
         Question = string.Empty,
         Answers = [string.Empty, string.Empty, string.Empty, string.Empty],
         CorrectAnswer = string.Empty,
         Time = 15,
+        BgImagePath = "avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png",
+        Category = string.Empty,
+        ImagePath = string.Empty,
+        AudioPath = string.Empty
+    };
+
+    private static QuizSlide defaultTextSlide = new QuizSlide
+    {
+        Id = 0,
+        Type = SlideTypes.Text.ToString(),
+        Header = string.Empty,
+        SubText = string.Empty,
         BgImagePath = "avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png",
         Category = string.Empty,
         ImagePath = string.Empty,
@@ -80,7 +93,7 @@ public static class QuizDataHandler
         }
     }
 
-    public static bool CreateNewSlide(string quizTitle)
+    public static bool CreateNewSlide(string quizTitle, SlideTypes type)
     {
         var filePath = GetFileNameByTitle(quizTitle);
 
@@ -94,8 +107,14 @@ public static class QuizDataHandler
         {
             var json = File.ReadAllText(filePath);
             var quizData = JsonSerializer.Deserialize<QuizData>(json);
-            var slide = defaultSlide;
-
+            var slide = new QuizSlide();
+            if(type == SlideTypes.Text) slide = defaultTextSlide;
+            else
+            {
+                slide = defaultQuestionSlide;
+                slide.Type = type.ToString();
+            }
+            
             if (quizData == null)
                 return false;
 
@@ -194,8 +213,6 @@ public static class QuizDataHandler
             var options = new JsonSerializerOptions { WriteIndented = true };
             var updatedJson = JsonSerializer.Serialize(quizData, options);
             File.WriteAllText(filePath, updatedJson);
-
-            Console.WriteLine($"Slide {updatedSlide.Id} updated in quiz '{quizTitle}'.");
             return true;
         }
         catch (Exception ex)

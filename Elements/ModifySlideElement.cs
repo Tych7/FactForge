@@ -51,9 +51,9 @@ namespace DesktopApp
             {
                 Margin = new Thickness(20)
             };
+            slideBorder.Child = slideGrid;
 
-            (Border QuizQuestion, TextBox questionText) = CreateQuizQuestionElement.Create(questionNumber, slide.Question ?? "", 200, VerticalAlignment.Top, false, "#FFFFFF", "#8C52FF");
-
+            (Border QuizQuestion, TextBox questionText) = CreateSlideHeaderElement.Create(questionNumber, slide.Question ?? "", 200, VerticalAlignment.Top, false, "#FFFFFF", "#8C52FF");
             slideGrid.Children.Add(QuizQuestion);
 
             
@@ -70,8 +70,6 @@ namespace DesktopApp
                 ElementHander.currentMultipleChoiceGrid = multipleChoiceOptions;
                 slideGrid.Children.Add(multipleChoiceOptions);
             }
-
-            slideBorder.Child = slideGrid;
 
             Button optionsButton = new Button
             {
@@ -147,10 +145,10 @@ namespace DesktopApp
             {
                 Margin = new Thickness(20)
             };
-
-            (Border QuizQuestion, TextBox questionText) = CreateQuizQuestionElement.Create(questionNumber, slide.Question ?? "", 500, VerticalAlignment.Center, true, "#FFFFFF", "#8C52FF");
-            slideGrid.Children.Add(QuizQuestion);
             slideBorder.Child = slideGrid;
+
+            (Border QuizQuestion, TextBox questionText) = CreateSlideHeaderElement.Create(questionNumber, slide.Question ?? "", 500, VerticalAlignment.Center, true, "#FFFFFF", "#8C52FF");
+            slideGrid.Children.Add(QuizQuestion);
 
             Button optionsButton = new Button
             {
@@ -192,7 +190,10 @@ namespace DesktopApp
             return (MainGrid, ElementHander.currentData);
         }
 
-        public static Grid CreateTextSlide(QuizSlide slide)
+        //------------------------------------------------------------
+        //TEXT
+        //------------------------------------------------------------
+        public static (Grid MultipleChoiceQuestionSlide, CurrentSlideData returnData) CreateTextSlide(QuizSlide slide)
         {
             Grid MainGrid = new Grid
             {
@@ -218,22 +219,28 @@ namespace DesktopApp
             {
                 Margin = new Thickness(20)
             };
-
-            TextBox Header = new TextBox
-            {
-                FontSize = 40,
-                Height = 150,
-                Classes = { "neon-input" },
-                Text = slide.Question,
-                VerticalAlignment = VerticalAlignment.Top,
-            };
-            slideGrid.Children.Add(Header);
-
             slideBorder.Child = slideGrid;
+
+            (Border SlideHeader, TextBox headerText) = CreateSlideHeaderElement.Create(0, slide.Header ?? "", 200, VerticalAlignment.Top, false, "#FFFFFF", "#8C52FF");
+            slideGrid.Children.Add(SlideHeader);
+
+
+            ElementHander.currentData = new CurrentSlideData
+            {
+                Id = slide.Id,
+                Type = slide.Type,
+                Header = headerText,
+                SubText = new TextBox(),
+                BgImagePath = "avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png",
+                Category = "",
+                ImagePath = "",
+                AudioPath = ""
+            };
+
 
             MainGrid.Children.Add(slideBorder);
 
-            return MainGrid;
+            return (MainGrid, ElementHander.currentData);
         }
 
         
