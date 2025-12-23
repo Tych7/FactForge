@@ -12,6 +12,7 @@ public class ModifyQuizHandler
 {
     public List<QuizSlide>? slides;
     public QuizSlide? currentSelectedSlide;
+    public string? currentSelectedSlideTypeIndex;
     private readonly Dictionary<int, Button> overviewButtons = new();
     private  Grid? quizPageGrid;
     private CurrentSlideData? returnData;
@@ -77,14 +78,36 @@ public class ModifyQuizHandler
 
     public void WriteNewQuestionData()
     {
-        Console.WriteLine($"Question {returnData?.Id}: {returnData?.Question?.Text}");
-        foreach(TextBox awnser in returnData?.Answers ?? [])
+        // Console.WriteLine($"Question {returnData?.Id}: {returnData?.Question?.Text}");
+        // foreach(TextBox awnser in returnData?.Answers ?? [])
+        // {
+        //     Console.WriteLine(awnser.Text);
+        // }
+        // Console.WriteLine($"Time: {returnData?.Time?.SelectedValue}");
+        
+        // Console.WriteLine($"Correct Answer: {returnData?.GetCurrentCorrectAnswer()}");
+        // Console.WriteLine();
+
+        List<string> newAnswers = [];
+        foreach(TextBox awnser in returnData?.Answers ?? []) newAnswers.Add(awnser.Text ?? "");
+        if (returnData != null && ElementHander.currentOpenQuizTitle != null)
         {
-            Console.WriteLine(awnser.Text);
+            QuizSlide slide = new QuizSlide
+            {
+                Id = returnData.Id,
+                Type = returnData.Type,
+                Question = returnData.Question?.Text,
+                Answers = newAnswers,
+                CorrectAnswer = returnData.GetCurrentCorrectAnswer(),
+                Time = int.Parse(returnData.Time?.SelectedValue?.ToString() ?? ""),
+                BgImagePath = returnData.BgImagePath,
+                Category = returnData.Category,
+                ImagePath = returnData.ImagePath,
+                AudioPath = returnData.AudioPath
+            };
+            QuizDataHandler.UpdateSlide(ElementHander.currentOpenQuizTitle, slide);
+            slides = QuizDataHandler.GetAllQuizSlides(ElementHander.currentOpenQuizTitle);
         }
-        Console.WriteLine($"Time: {returnData?.Time?.SelectedValue}");
-        Console.WriteLine($"Correct Answer: {returnData?.GetCurrentCorrectAnswer()}");
-        Console.WriteLine();
     }
 
     private void OpenFirstSlide()
@@ -102,16 +125,19 @@ public class ModifyQuizHandler
                 case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
                     SetCurrentSelectedSlide(slide.Id, questionIndex);
                     currentSelectedSlide = slide;
+                    currentSelectedSlideTypeIndex = $"Q{questionIndex}";
                     return;
 
                 case var t when t == SlideTypes.OpenQuestion.ToString():
                     SetCurrentSelectedSlide(slide.Id, questionIndex);
                     currentSelectedSlide = slide;
+                    currentSelectedSlideTypeIndex = $"Q{questionIndex}";
                     return;
 
                 case var t when t == SlideTypes.Text.ToString():
                     SetCurrentSelectedSlide(slide.Id, textIndex);
                     currentSelectedSlide = slide;
+                    currentSelectedSlideTypeIndex = $"T{textIndex}";
                     return;
             }
         }
@@ -160,16 +186,19 @@ public class ModifyQuizHandler
                 case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
                     (slideToShow, returnData) =
                         ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide, slideTypeIndex);
+                        currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;
 
                 case var t when t == SlideTypes.OpenQuestion.ToString():
-                    slideToShow =
+                    (slideToShow, returnData) =
                         ModifySlideElement.CreateOpenQuestionSlide(slide, slideTypeIndex);
+                        currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;
 
                 default:
                     slideToShow =
                         ModifySlideElement.CreateTextSlide(slide);
+                        currentSelectedSlideTypeIndex = $"T{slideTypeIndex}";
                     break;
             }
 

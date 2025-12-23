@@ -32,6 +32,7 @@ namespace DesktopApp
                     }
                 }
             };
+            
 
             Grid mainGrid = new Grid
             {
@@ -39,12 +40,26 @@ namespace DesktopApp
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
 
+            async Task ClosePanel()
+            {
+                translate.X = width;
+                await Task.Delay(transitionDuration);
+
+                parentGrid.Children.Remove(mainGrid);
+                _isOpen = false;
+            }
+
             Border overlay = new Border
             {
                 Background = new SolidColorBrush(Color.Parse("#99000000")),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
+            overlay.PointerPressed += async (_, __) =>
+            {
+                await ClosePanel();
+            };
+
             mainGrid.Children.Add(overlay);
 
             Border elementBorder = new Border
@@ -97,13 +112,9 @@ namespace DesktopApp
 
 
             var closeButton = AddCloseButton("Close", width - 40);
-            closeButton.Click += async (sender, e) =>
+            closeButton.Click += async (_, __) =>
             {
-                translate.X = width;
-                await Task.Delay(transitionDuration);
-
-                parentGrid.Children.Remove(mainGrid);
-                _isOpen = false;
+                await ClosePanel();
             };
 
             panelGrid.Children.Add(closeButton);

@@ -36,6 +36,7 @@ public static class CreateQuizQuestionElement{
         TextBox questionText = new TextBox
         {
             Text = text,
+            Watermark = "Question here...",
             BorderBrush = Brushes.Transparent,
             Background = Brushes.Transparent,
             Foreground = new SolidColorBrush(Color.Parse(textColor)),

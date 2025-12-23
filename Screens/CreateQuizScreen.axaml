@@ -12,7 +12,7 @@
 
             <Button
                 Name="BackButton" 
-                Width="96"
+                Width="80"
                 Classes="neon-icon-button"
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
@@ -22,23 +22,33 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"/>
             </Button>
-
-            <Button
-                Name="NewPageButton" 
-                Width="96"
-                Classes="neon-icon-button"
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Top" 
-                Click="NewPageClick"
-                Margin="96,0,0,0">
-                <Image Source="avares://DesktopApp/Assets/Icons/plus.png"
-                    Stretch="Uniform"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"/>
-            </Button>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="1080">
-                <Border x:Name = "QuizOverview" Classes="neon-frame" Height="972" Width="192" VerticalAlignment="Bottom"/>
+                <Grid Height="972" Width="192" VerticalAlignment="Bottom">
+                    <Button
+                        Width="96"
+                        Classes="neon-icon-button"
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Top" 
+                        Click="NewPageClick">
+                        <Image Source="avares://DesktopApp/Assets/Icons/plus.png"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
+                    </Button>
+                    <Button
+                        Width="96"
+                        Classes="neon-icon-button"
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Top" 
+                        Click="DeletePageClick">
+                        <Image Source="avares://DesktopApp/Assets/Icons/trash.png"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
+                    </Button>
+                    <Border x:Name = "QuizOverview" Classes="neon-frame" Height="892" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+                </Grid>
                 <Grid x:Name="Quizpage" Width="1728" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
             </StackPanel>
 

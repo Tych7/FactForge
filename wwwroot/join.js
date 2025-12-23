@@ -2,7 +2,7 @@ let playerName = null;
 let connection = null;
 let countdownInterval = null;
 
-const neonClasses = ["neon-red", "neon-green", "neon-blue", "neon-yellow"];
+const neonClasses = [ "neon-blue", "neon-red", "neon-green", "neon-yellow"];
 
 document.getElementById("joinBtn").addEventListener("click", joinQuiz);
 

@@ -80,7 +80,7 @@ public static class QuizDataHandler
         }
     }
 
-    public static bool CreateNewQuestion(string quizTitle)
+    public static bool CreateNewSlide(string quizTitle)
     {
         var filePath = GetFileNameByTitle(quizTitle);
 
@@ -120,6 +120,91 @@ public static class QuizDataHandler
         }
     }
 
+    public static bool DeleteSlide(string quizTitle, int questionId)
+    {
+        var filePath = GetFileNameByTitle(quizTitle);
+
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            Console.WriteLine($"Quiz '{quizTitle}' not found.");
+            return false;
+        }
+
+        try
+        {
+            var json = File.ReadAllText(filePath);
+            var quizData = JsonSerializer.Deserialize<QuizData>(json);
+
+            if (quizData == null || quizData.Quiz == null)
+                return false;
+
+            var questionToRemove = quizData.Quiz.FirstOrDefault(q => q.Id == questionId);
+
+            if (questionToRemove == null)
+            {
+                Console.WriteLine($"Question with ID {questionId} not found in quiz '{quizTitle}'.");
+                return false;
+            }
+
+            quizData.Quiz.Remove(questionToRemove);
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var updatedJson = JsonSerializer.Serialize(quizData, options);
+            File.WriteAllText(filePath, updatedJson);
+
+            Console.WriteLine($"Question {questionId} deleted from quiz '{quizTitle}'.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting question: {ex.Message}");
+            return false;
+        }
+    }
+
+    public static bool UpdateSlide(string quizTitle, QuizSlide updatedSlide)
+    {
+        var filePath = GetFileNameByTitle(quizTitle);
+
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            Console.WriteLine($"Quiz '{quizTitle}' not found.");
+            return false;
+        }
+
+        try
+        {
+            var json = File.ReadAllText(filePath);
+            var quizData = JsonSerializer.Deserialize<QuizData>(json);
+
+            if (quizData == null || quizData.Quiz == null)
+                return false;
+
+            var index = quizData.Quiz.FindIndex(q => q.Id == updatedSlide.Id);
+
+            if (index == -1)
+            {
+                Console.WriteLine($"Slide with ID {updatedSlide.Id} not found in quiz '{quizTitle}'.");
+                return false;
+            }
+
+            // Replace slide data
+            quizData.Quiz[index] = updatedSlide;
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var updatedJson = JsonSerializer.Serialize(quizData, options);
+            File.WriteAllText(filePath, updatedJson);
+
+            Console.WriteLine($"Slide {updatedSlide.Id} updated in quiz '{quizTitle}'.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error updating slide: {ex.Message}");
+            return false;
+        }
+    }
+
 
     public static QuizSlide GetSlideById(string quizTitle, int id)
     {
@@ -149,7 +234,6 @@ public static class QuizDataHandler
         {
             var json = File.ReadAllText(filePath);
             var quizData = JsonSerializer.Deserialize<QuizData>(json);
-
             return quizData?.Quiz ?? new List<QuizSlide>();
         }
         catch (Exception ex)

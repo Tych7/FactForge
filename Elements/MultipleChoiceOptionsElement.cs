@@ -17,12 +17,12 @@ namespace DesktopApp
             (VerticalAlignment.Bottom, HorizontalAlignment.Right)
         ];
 
-        private static readonly List<string> OptionIds = ["A -", "B -", "C -", "D -"];
+        private static readonly List<string> OptionIds = ["A", "B", "C", "D"];
 
         public static (Grid optionsGrid, List<TextBox> optionInputs) Create(
             List<string> currentOptions,
             List<string> optionColors,
-            int optionCount,
+            string optionCount,
             int height)
         {
             var inputs = new List<TextBox>();
@@ -40,7 +40,7 @@ namespace DesktopApp
             optionsGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
 
             // Rows depend on option count
-            if (optionCount == 2)
+            if (int.Parse(optionCount) == 2)
             {
                 optionsGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
             }
@@ -50,7 +50,7 @@ namespace DesktopApp
                 optionsGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
             }
 
-            for (int i = 0; i < optionCount; i++)
+            for (int i = 0; i < int.Parse(optionCount); i++)
             {
                 var inputField = CreateOptionField(
                     currentOptions[i],
@@ -58,7 +58,7 @@ namespace DesktopApp
                     OptionIds[i],
                     out var textBox);
 
-                if (optionCount == 2)
+                if (int.Parse(optionCount) == 2)
                 {
                     // One row, side by side
                     Grid.SetRow(inputField, 0);
@@ -120,7 +120,7 @@ namespace DesktopApp
 
             var idText = new TextBlock
             {
-                Text = id,
+                Text = $"{id} -",
                 Margin = new Thickness(20, 0, 10, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = new SolidColorBrush(Color.Parse(color)),
@@ -131,6 +131,7 @@ namespace DesktopApp
             textBox = new TextBox
             {
                 Text = text,
+                Watermark = $"Option {id} here...",
                 BorderBrush = Brushes.Transparent,
                 Background = Brushes.Transparent,
                 Foreground = new SolidColorBrush(Color.Parse(color)),
