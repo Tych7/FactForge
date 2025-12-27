@@ -21,17 +21,13 @@
             <Setter Property="BorderThickness" Value="8"/>
             <Setter Property="BorderBrush" Value="#00FFFF"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="ClipToBounds" Value="True"/>
             <Setter Property="Background" Value="Black"/>
-            <Setter Property="Effect">
-                <DropShadowEffect 
-                    Color="#00FFFF"
-                    BlurRadius="25"
-                    Opacity="1"
-                    OffsetX="0"
-                    OffsetY="0"/>
-            </Setter>
+            <Setter Property="ClipToBounds" Value="False"/>
+
+            <Setter Property="BoxShadow"
+                    Value="0 0 25 5 #00FFFF, 0 0 15 -5 #00FFFF"/>
         </Style>
+
 
         <!-- Neon Dropdown Style -->
         <Style Selector="ComboBox.neon-dropdown">

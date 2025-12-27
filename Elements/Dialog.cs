@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -81,7 +82,7 @@ namespace DesktopApp
             TextBlock dialogHeader = AddDialogHeader(header, edgeSpacing);
             dialogWindow.Children.Add(dialogHeader);
 
-            var (inputQuizName, titleInput) = AddUserInput(userinputTitle, dialogWidth - edgeSpacing * 2); 
+            var (inputQuizName, titleInput) = AddUserInputTextBox(userinputTitle, dialogWidth - edgeSpacing * 2); 
             dialogWindow.Children.Add(inputQuizName);
 
             int buttonPanelHeigth = 100;
@@ -115,6 +116,61 @@ namespace DesktopApp
             dialogGrid.Children.Add(dialogWindow);
 
             return (dialogGrid, titleInput);
+        }
+
+        public static (Grid dialogGrid, ComboBox slideTypeInput) CreateNewQuizSlide(Grid parentGrid, string header, string userinputTitle, List<string> options, string defaultValue, Action<string> onConfirm)
+        {
+            int dialogWidth = 600;
+            int dialogHeight = 400;
+            int edgeSpacing = 20;
+
+            Grid dialogGrid = new Grid { };
+
+            Border darkOverlay = CreateOverlay();
+            dialogGrid.Children.Add(darkOverlay);
+
+            Border dialogFrame = AddDialogFrame(dialogHeight, dialogWidth);
+            dialogGrid.Children.Add(dialogFrame);
+
+            Grid dialogWindow = AddDialogWindow(dialogHeight, dialogWidth);
+
+            TextBlock dialogHeader = AddDialogHeader(header, edgeSpacing);
+            dialogWindow.Children.Add(dialogHeader);
+
+            var (inputQuizName, slideTypeInput) = AddUserInputDropDown(userinputTitle, options, defaultValue, dialogWidth - edgeSpacing * 2); 
+            dialogWindow.Children.Add(inputQuizName);
+
+            int buttonPanelHeigth = 100;
+            Grid buttonPanel = new Grid
+            {
+                Width = dialogWidth,
+                Height = buttonPanelHeigth,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Avalonia.Thickness(0, 0, 0, edgeSpacing)
+            };
+
+            // Close Button
+            var closeButton = AddButtonLeft("Close", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            closeButton.Click += (sender, e) =>
+            {
+                parentGrid.Children.Remove(dialogGrid);
+            };
+            buttonPanel.Children.Add(closeButton);
+
+            // Confirm Button
+            var confirmButton = AddButtonRight("Confirm", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            confirmButton.Click += (sender, e) =>
+            {
+                onConfirm?.Invoke(slideTypeInput?.SelectedValue?.ToString()!);
+                parentGrid.Children.Remove(dialogGrid);
+            };
+            buttonPanel.Children.Add(confirmButton);
+            dialogWindow.Children.Add(buttonPanel);
+
+            dialogGrid.Children.Add(dialogWindow);
+
+            return (dialogGrid, slideTypeInput);
         }
 
 
@@ -192,7 +248,7 @@ namespace DesktopApp
             return messageOutline;
         }
 
-        private static (Grid container, TextBox input) AddUserInput(string title, double width)
+        private static (Grid container, TextBox input) AddUserInputTextBox(string title, double width)
         {
             Grid userInput = new Grid
             {
@@ -221,6 +277,33 @@ namespace DesktopApp
             userInput.Children.Add(fieldTitle);
 
             return (userInput, inputField);
+        }
+
+        private static (StackPanel container, ComboBox input) AddUserInputDropDown(string title, List<string> options, string defaultValue, double width)
+        {
+            StackPanel userInput = new StackPanel
+            {
+                Height = 80,
+                Width = width,
+                Orientation = Orientation.Horizontal
+            };
+
+            TextBlock fieldTitle = new TextBlock
+            {
+                Text = $"{title}:",
+                Classes = {"neon-text"},
+                FontSize = 45,
+                Width = width * 1/3,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+            userInput.Children.Add(fieldTitle);
+
+            (Border DropDownElement, ComboBox DropDownReference) = DropdownElement.Create(options , defaultValue, 50); 
+            DropDownElement.Width = width * 2/3;
+            userInput.Children.Add(DropDownElement);
+
+            return (userInput, DropDownReference);
         }
 
 

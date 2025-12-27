@@ -1,7 +1,10 @@
 
 
+using System.Collections.Generic;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 
 namespace DesktopApp;
 
@@ -31,4 +34,17 @@ public class AppHandler
                 break;
         }
     }
+
+    public static Geometry GetIcon(string key)
+    {
+        if (Application.Current?.TryGetResource(
+                key,
+                Application.Current.ActualThemeVariant,
+                out var res) == true
+            && res is Geometry g)
+            return g;
+
+        throw new KeyNotFoundException($"Icon '{key}' not found.");
+    }
+
 }

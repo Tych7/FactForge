@@ -38,9 +38,9 @@ public partial class StartScreen : UserControl
                 "NewQuestion",
                 new
                 {
-                    type = q.Type,       // "multiple" or "open"
+                    type = q.Type,       
                     text = q.Question,
-                    choices = q.Answers,  // [] for open questions
+                    choices = q.Answers,
                     time = q.Time
                 }
             );

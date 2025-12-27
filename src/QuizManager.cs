@@ -7,7 +7,7 @@ namespace DesktopApp;
 
 public static class QuizManager
 {
-    private static List<QuizQuestion>? _questions;
+    private static List<QuizSlide>? _questions;
     private static int _currentIndex = 0;
 
     static QuizManager()
@@ -27,7 +27,7 @@ public static class QuizManager
         if (data?.Quiz == null || data.Quiz.Count == 0)
         {
             Console.WriteLine("No questions found in JSON.");
-            _questions = new List<QuizQuestion>();
+            _questions = new List<QuizSlide>();
             return;
         }
 
@@ -37,7 +37,7 @@ public static class QuizManager
     }
 
 
-    public static QuizQuestion GetNextQuestion()
+    public static QuizSlide GetNextQuestion()
     {
         if (_questions == null || _questions.Count == 0)
             throw new InvalidOperationException("No questions loaded.");

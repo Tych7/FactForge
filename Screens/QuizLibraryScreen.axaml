@@ -27,10 +27,10 @@
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Click="BackClick">
-                <Image Source="avares://DesktopApp/Assets/Icons/arrow.png"
-                    Stretch="Uniform"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"/>
+                <Border>
+                    <PathIcon
+                        Data="{StaticResource arrow_left_regular}" />
+                </Border>
             </Button>
 
             <Button

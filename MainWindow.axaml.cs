@@ -6,7 +6,8 @@ namespace DesktopApp;
 
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    public Grid ModalLayerContainer => ModalLayer;
+        public MainWindow()
     {
         InitializeComponent();
     }
@@ -15,4 +16,5 @@ public partial class MainWindow : Window
     {
         MainContent.Content = new StartScreen();
     }
+
 }

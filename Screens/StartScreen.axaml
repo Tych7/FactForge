@@ -11,16 +11,17 @@
             </Grid.Background>
             
             <Button
-                Name="ExitButton" 
+                Name="ExitButton"
                 Classes="neon-icon-button"
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Top" 
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
                 Click="ExitClick">
-                <Image Source="avares://DesktopApp/Assets/Icons/quit.png"
-                    Stretch="Uniform"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"/>
+                <Border>
+                    <PathIcon
+                        Data="{StaticResource arrow_export_rtl_regular}" />
+                </Border>
             </Button>
+
 
             <Button
                 Name="SendQuestionButton" 
@@ -51,7 +52,6 @@
             
             </StackPanel>
             
-
 
             <Image x:Name="QrImageControl" Width="200" Height="200"/>
             <TextBlock x:Name="JoinUrlText"/>
