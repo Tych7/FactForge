@@ -71,7 +71,7 @@ public class ModifyQuizHandler
             Content = quizOverviewPanel
         };
 
-        OpenFirstSlide();
+        OpenSlideById(0);
 
         return quizOverview;
     }
@@ -83,12 +83,34 @@ public class ModifyQuizHandler
             QuizSlide slide;
             if (returnData.Type == SlideTypes.Text.ToString())
             {
+                int headerFontSize =
+                    int.TryParse(returnData.Header?.FontSize?.SelectedValue?.ToString(), out var h)
+                        ? h
+                        : returnData.Header?.Text?.FontSize is > 0
+                            ? (int)returnData.Header.Text.FontSize
+                            : ElementHander.textSizes.headerTextSize;
+
+                int subTextFontSize =
+                    int.TryParse(returnData.SubText?.FontSize?.SelectedValue?.ToString(), out var s)
+                        ? s
+                        : returnData.SubText?.Text?.FontSize is > 0
+                            ? (int)returnData.SubText.Text.FontSize
+                            : ElementHander.textSizes.subtextTextSize;
+
                 slide = new QuizSlide
                 {
                     Id = returnData.Id,
                     Type = returnData.Type,
-                    Header = returnData.Header?.Text,
-                    SubText = returnData.SubText?.Text,
+                    Header = new QuizSlideText
+                    {
+                        Text = returnData.Header?.Text?.Text ?? "",
+                        FontSize = headerFontSize
+                    },
+                    SubText = new QuizSlideText
+                    {
+                        Text = returnData.SubText?.Text?.Text ?? "",
+                        FontSize = subTextFontSize
+                    },
                     BgImagePath = returnData.BgImagePath,
                     Category = returnData.Category,
                     ImagePath = returnData.ImagePath,
@@ -118,7 +140,7 @@ public class ModifyQuizHandler
         }
     }
 
-    private void OpenFirstSlide()
+    public void OpenSlideById(int slideId)
     {
         if (slides == null || slides.Count == 0)
             return;
@@ -126,32 +148,35 @@ public class ModifyQuizHandler
         int questionIndex = 1;
         int textIndex = 1;
 
-        foreach (QuizSlide slide in slides)
+        foreach (var slide in slides)
         {
-            switch (slide.Type)
+            if (slide.Id != slideId)
             {
-                case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
-                    SetCurrentSelectedSlide(slide.Id, questionIndex);
-                    currentSelectedSlide = slide;
-                    currentSelectedSlideTypeIndex = $"Q{questionIndex}";
-                    return;
-
-                case var t when t == SlideTypes.OpenQuestion.ToString():
-                    SetCurrentSelectedSlide(slide.Id, questionIndex);
-                    currentSelectedSlide = slide;
-                    currentSelectedSlideTypeIndex = $"Q{questionIndex}";
-                    return;
-
-                case var t when t == SlideTypes.Text.ToString():
-                    SetCurrentSelectedSlide(slide.Id, textIndex);
-                    currentSelectedSlide = slide;
-                    currentSelectedSlideTypeIndex = $"T{textIndex}";
-                    return;
+                // Keep track of index for labeling
+                switch (slide.Type)
+                {
+                    case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
+                        questionIndex++;
+                        break;
+                    case var t when t == SlideTypes.OpenQuestion.ToString():
+                        questionIndex++;
+                        break;
+                    case var t when t == SlideTypes.Text.ToString():
+                        textIndex++;
+                        break;
+                }
+                continue;
             }
-        }
 
-        UpdateSelectedButtonBorder();
+            int slideTypeIndex = slide.Type == SlideTypes.Text.ToString() ? textIndex : questionIndex;
+
+            SelectSlide(slide.Id, slideTypeIndex);
+            currentSelectedSlide = slide;
+            currentSelectedSlideTypeIndex = slide.Type == SlideTypes.Text.ToString() ? $"T{slideTypeIndex}" : $"Q{slideTypeIndex}";
+            return;
+        }
     }
+
 
     private Button CreateQuizOverviewButton(int slideId, string content, int slideTypeIndex)
     {
@@ -166,13 +191,22 @@ public class ModifyQuizHandler
             BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
         };
 
-        button.Click += (_, _) => SetCurrentSelectedSlide(slideId, slideTypeIndex);
+        button.Click += (_, _) => HandleSlideClick(slideId, slideTypeIndex);
 
         overviewButtons[slideId] = button;
         return button;
     }
 
-    private void SetCurrentSelectedSlide(int slideId, int slideTypeIndex)
+    private void HandleSlideClick(int slideId, int slideTypeIndex)
+    {
+        // Save previous slide
+        WriteNewQuestionData();
+        
+        // Show new slide
+        SelectSlide(slideId, slideTypeIndex);
+    }
+
+    private void SelectSlide(int slideId, int slideTypeIndex)
     {
         if (slides == null)
             return;
@@ -182,39 +216,36 @@ public class ModifyQuizHandler
             if (slide.Id != slideId)
                 continue;
 
-            WriteNewQuestionData();
-
             currentSelectedSlide = slide;
-            UpdateSelectedButtonBorder();
 
             Grid slideToShow;
 
             switch (slide.Type)
             {
                 case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
-                    (slideToShow, returnData) =
-                        ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide, slideTypeIndex);
-                        currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
+                    (slideToShow, returnData) = ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide, slideTypeIndex);
+                    currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;
 
                 case var t when t == SlideTypes.OpenQuestion.ToString():
-                    (slideToShow, returnData) =
-                        ModifySlideElement.CreateOpenQuestionSlide(slide, slideTypeIndex);
-                        currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
+                    (slideToShow, returnData) = ModifySlideElement.CreateOpenQuestionSlide(slide, slideTypeIndex);
+                    currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;
 
                 default:
-                    (slideToShow, returnData) =
-                        ModifySlideElement.CreateTextSlide(slide);
-                        currentSelectedSlideTypeIndex = $"T{slideTypeIndex}";
+                    (slideToShow, returnData) = ModifySlideElement.CreateTextSlide(slide);
+                    currentSelectedSlideTypeIndex = $"T{slideTypeIndex}";
                     break;
             }
 
             quizPageGrid?.Children.Clear();
             quizPageGrid?.Children.Add(slideToShow);
+
+            UpdateSelectedButtonBorder();
             return;
         }
     }
+
 
     private void UpdateSelectedButtonBorder()
     {

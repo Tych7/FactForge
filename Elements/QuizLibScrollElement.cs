@@ -1,5 +1,7 @@
 using System;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -13,7 +15,7 @@ namespace DesktopApp
         {
             Border elementBorder = new Border
             {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
                 Margin = new Avalonia.Thickness(10, 10, 10, 0),
                 BorderThickness = new Avalonia.Thickness(0,0,0,2),
                 BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
@@ -29,56 +31,57 @@ namespace DesktopApp
                 Classes = { "neon-text" },
                 FontSize = 50,
                 Text = QuizTitle,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left
             };
             mainGrid.Children.Add(quizTitle); 
 
 
             StackPanel buttonUnit = new StackPanel
             {
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right
             };
 
-            var editIcon = new Uri("avares://DesktopApp/Assets/Icons/pencil.png");
-            Image editButtonIcon = new Image
+            
+            var editIcon = new PathIcon
             {
-                Source = new Bitmap(AssetLoader.Open(editIcon)),
-                Stretch = Stretch.Uniform,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                Data = AppHandler.GetIcon("edit_regular"),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 30,
+                Width = 30
             };
             Button editButton = new Button
             {
                 Height = 60,
                 Width = 60,
                 Classes = {"neon-icon-button"},
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                Content = editButtonIcon,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = new Border { Child = editIcon },                
                 Margin = new Avalonia.Thickness(0,0,10,0)
             };
             editButton.Click += (_, __) => onEdit?.Invoke(QuizTitle);
             buttonUnit.Children.Add(editButton);
 
-            var deleteIcon = new Uri("avares://DesktopApp/Assets/Icons/trash.png");
-            Image deleteButtonIcon = new Image
+            var deleteButtonIcon = new PathIcon
             {
-                Source = new Bitmap(AssetLoader.Open(deleteIcon)),
-                Stretch = Stretch.Uniform,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                Data = AppHandler.GetIcon("delete_regular"),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Height = 30,
+                Width = 30
             };
             Button deleteButton = new Button
             {
                 Height = 60,
                 Width = 60,
                 Classes = {"neon-icon-button"},
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                Content = deleteButtonIcon
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = new Border { Child = deleteButtonIcon },
             };
             deleteButton.Click += (_, __) => onDelete?.Invoke(QuizTitle);
             buttonUnit.Children.Add(deleteButton);

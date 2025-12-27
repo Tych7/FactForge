@@ -16,6 +16,7 @@
     <Application.Styles>
         <FluentTheme />
 
+        <StyleInclude Source="avares://DesktopApp/Styles/Icons.xaml"/> 
         <!-- Merge external style sheets -->
         <StyleInclude Source="avares://DesktopApp/Styles/TextStyles.xaml"/> 
         <StyleInclude Source="avares://DesktopApp/Styles/Elements.xaml"/> 

@@ -10,9 +10,9 @@ public record CurrentSlideData
 
     public string? Type { get; set; }
 
-    public TextBox? Header { get; set; }
+    public CurrentSlideText? Header { get; set; }
 
-    public TextBox? SubText { get; set; }
+    public CurrentSlideText? SubText { get; set; }
 
     public TextBox? Question { get; set; }
 
@@ -37,6 +37,16 @@ public record CurrentSlideData
             return CorrectAnswerComboBox?.SelectedValue?.ToString();
         else
             return CorrectAnswer?.Text;
+    }
+
+
+    public record CurrentSlideText
+    {
+        [JsonPropertyName("text")]
+        public TextBox? Text { get; set; }
+
+        [JsonPropertyName("fontSize")]
+        public ComboBox? FontSize { get; set; }
     }
     
 }

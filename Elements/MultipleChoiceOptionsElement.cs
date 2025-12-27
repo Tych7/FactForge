@@ -9,19 +9,12 @@ namespace DesktopApp
 {
     public static class MultipleChoiceOptionsElement
     {
-        private static readonly List<(VerticalAlignment VA, HorizontalAlignment HA)> GridPositions =
-        [
-            (VerticalAlignment.Top, HorizontalAlignment.Left),
-            (VerticalAlignment.Bottom, HorizontalAlignment.Left),
-            (VerticalAlignment.Top, HorizontalAlignment.Right),
-            (VerticalAlignment.Bottom, HorizontalAlignment.Right)
-        ];
-
         private static readonly List<string> OptionIds = ["A", "B", "C", "D"];
 
         public static (Grid optionsGrid, List<TextBox> optionInputs) Create(
             List<string> currentOptions,
             List<string> optionColors,
+            string correctAnswer,
             string optionCount,
             int height)
         {
@@ -56,6 +49,7 @@ namespace DesktopApp
                     currentOptions[i],
                     optionColors[i],
                     OptionIds[i],
+                    correctAnswer,
                     out var textBox);
 
                 if (int.Parse(optionCount) == 2)
@@ -80,9 +74,10 @@ namespace DesktopApp
         }
 
         private static Border CreateOptionField(
-            string text,
+            string option,
             string color,
             string id,
+            string correctAnswer,
             out TextBox textBox)
         {
             var border = new Border
@@ -106,7 +101,13 @@ namespace DesktopApp
                 )
             };
 
-            var grid = new Grid
+            var optionFieldGrid = new Grid
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+
+            var textGrid = new Grid
             {
                 ColumnDefinitions =
                 {
@@ -125,12 +126,20 @@ namespace DesktopApp
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground = new SolidColorBrush(Color.Parse(color)),
                 FontWeight = FontWeight.Bold,
-                FontSize = 70
+                FontSize = 70,
+                Effect = new DropShadowEffect
+                {
+                    Color = Color.Parse(color),
+                    BlurRadius = 15,
+                    OffsetX = 0,
+                    OffsetY = 0,
+                    Opacity = 0.8
+                }
             };
 
             textBox = new TextBox
             {
-                Text = text,
+                Text = option,
                 Watermark = $"Option {id} here...",
                 BorderBrush = Brushes.Transparent,
                 Background = Brushes.Transparent,
@@ -140,16 +149,58 @@ namespace DesktopApp
                 HorizontalContentAlignment = HorizontalAlignment.Left,
                 FontWeight = FontWeight.Regular,
                 AcceptsReturn = false,
+                Effect = new DropShadowEffect
+                {
+                    Color = Color.Parse(color),
+                    BlurRadius = 15,
+                    OffsetX = 0,
+                    OffsetY = 0,
+                    Opacity = 0.8
+                }
             };
 
             ElementHander.AutoFitTextBox(textBox, false);
 
-            grid.Children.Add(idText);
-            grid.Children.Add(textBox);
+            textGrid.Children.Add(idText);
+            textGrid.Children.Add(textBox);
             Grid.SetColumn(textBox, 1);
+            optionFieldGrid.Children.Add(textGrid);
 
-            border.Child = grid;
+            if(option == correctAnswer) optionFieldGrid.Children.Add(CreateCheckMark());
+
+            border.Child = optionFieldGrid;
             return border;
+        }
+
+        private static Border CreateCheckMark()
+        {
+            var checkMarkIcon = new PathIcon
+            {
+                Data = AppHandler.GetIcon("checkmark_circle_regular"),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Height = 30,
+                Width = 30,
+                Foreground = new SolidColorBrush(Color.Parse("#00FF00"))
+            };
+
+            var checkMark = new Border
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(5,5,0,0),
+                Child = checkMarkIcon,
+                Effect = new DropShadowEffect
+                {
+                    Color = Color.Parse("#00FF00"),
+                    BlurRadius = 30,
+                    Opacity = 1,
+                    OffsetX = 0,
+                    OffsetY = 0,
+                }
+            };
+            
+            return checkMark;
         }
     }
 }

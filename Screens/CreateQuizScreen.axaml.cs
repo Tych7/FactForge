@@ -32,7 +32,7 @@ public partial class CreateQuizScreen : UserControl
         }
     }
 
-    private void NewPageClick(object? sender, RoutedEventArgs e)
+    private void NewSlideClick(object? sender, RoutedEventArgs e)
     {
         List<string> TypeOptions = [];
         foreach (SlideTypes type in Enum.GetValues(typeof(SlideTypes))) TypeOptions.Add(type.ToString());
@@ -42,23 +42,27 @@ public partial class CreateQuizScreen : UserControl
             {
                 if(type.ToString() == selectedType)
                 {
-                    QuizDataHandler.CreateNewSlide(ElementHander.currentOpenQuizTitle ?? "", type);
+                    (bool result, int slideId) = QuizDataHandler.CreateNewSlide(ElementHander.currentOpenQuizTitle ?? "", type);
                     LoadSlides(ElementHander.currentOpenQuizTitle ?? "");
+                    modifyQuizHandler?.OpenSlideById(slideId);
                 }
             }
         });
         MainGrid.Children.Add(dialogGrid);
     }
 
-    private void DeletePageClick(object? sender, RoutedEventArgs e)
+    private void DeleteSlideClick(object? sender, RoutedEventArgs e)
     {
         if(modifyQuizHandler?.currentSelectedSlide != null)
         {
             var dialog = Dialog.AreYouSure( MainGrid, $"When you press the confim button slide '{modifyQuizHandler.currentSelectedSlideTypeIndex}' will be deleted.", () =>
             {
-                bool result = QuizDataHandler.DeleteSlide(ElementHander.currentOpenQuizTitle ?? "", modifyQuizHandler.currentSelectedSlide.Id);
-                Console.WriteLine(modifyQuizHandler.currentSelectedSlide.Id);
-                if (result && ElementHander.currentOpenQuizTitle != null) LoadSlides(ElementHander.currentOpenQuizTitle);
+                bool deleteResult = QuizDataHandler.DeleteSlide(ElementHander.currentOpenQuizTitle ?? "", modifyQuizHandler.currentSelectedSlide.Id);
+                if (deleteResult)
+                {
+                    bool reassignResult = QuizDataHandler.ReassignSlideIds(ElementHander.currentOpenQuizTitle ?? ""); 
+                    if(reassignResult && ElementHander.currentOpenQuizTitle != null) LoadSlides(ElementHander.currentOpenQuizTitle);
+                } 
             });
             MainGrid.Children.Add(dialog);
         }

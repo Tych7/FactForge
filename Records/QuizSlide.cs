@@ -18,10 +18,10 @@ public record QuizSlide
     public string? Type { get; set; }
 
     [JsonPropertyName("header")]
-    public string? Header { get; set; }
+    public QuizSlideText? Header { get; set; }
 
     [JsonPropertyName("subText")]
-    public string? SubText { get; set; }
+    public QuizSlideText? SubText { get; set; }
 
     [JsonPropertyName("question")]
     public string? Question { get; set; }
@@ -46,5 +46,15 @@ public record QuizSlide
 
     [JsonPropertyName("audioPath")]
     public string? AudioPath { get; set; }
-    
+
+
+    public record QuizSlideText
+    {
+        [JsonPropertyName("text")]
+        public string Text { get; set; } = string.Empty;
+
+        [JsonPropertyName("fontSize")]
+        public int FontSize { get; set; }
+    }
+   
 }

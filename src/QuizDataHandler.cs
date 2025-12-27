@@ -30,8 +30,8 @@ public static class QuizDataHandler
     {
         Id = 0,
         Type = SlideTypes.Text.ToString(),
-        Header = string.Empty,
-        SubText = string.Empty,
+        Header = new QuizSlideText{Text = string.Empty, FontSize = 150},
+        SubText = new QuizSlideText{Text = string.Empty, FontSize = 80},
         BgImagePath = "avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png",
         Category = string.Empty,
         ImagePath = string.Empty,
@@ -93,14 +93,14 @@ public static class QuizDataHandler
         }
     }
 
-    public static bool CreateNewSlide(string quizTitle, SlideTypes type)
+    public static (bool result, int index) CreateNewSlide(string quizTitle, SlideTypes type)
     {
         var filePath = GetFileNameByTitle(quizTitle);
 
         if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
         {
             Console.WriteLine($"Quiz '{quizTitle}' not found.");
-            return false;
+            return (false, 0);
         }
 
         try
@@ -116,10 +116,10 @@ public static class QuizDataHandler
             }
             
             if (quizData == null)
-                return false;
+                return (false, 0);
 
             // Assign next available question ID
-            int nextId = quizData.Quiz.Count == 0 ? 1 : quizData.Quiz.Max(q => q.Id) + 1;
+            int nextId = quizData.Quiz.Count == 0 ? 0 : quizData.Quiz.Max(q => q.Id) + 1;
             slide.Id = nextId;
 
             quizData.Quiz.Add(slide);
@@ -130,12 +130,12 @@ public static class QuizDataHandler
             File.WriteAllText(filePath, updatedJson);
 
             Console.WriteLine($"Question added to quiz '{quizTitle}'.");
-            return true;
+            return (true, nextId);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error adding question: {ex.Message}");
-            return false;
+            return (false, 0);
         }
     }
 
@@ -222,6 +222,45 @@ public static class QuizDataHandler
         }
     }
 
+    public static bool ReassignSlideIds(string quizTitle)
+    {
+        var filePath = GetFileNameByTitle(quizTitle);
+
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+        {
+            Console.WriteLine($"Quiz '{quizTitle}' not found.");
+            return false;
+        }
+
+        try
+        {
+            var json = File.ReadAllText(filePath);
+            var quizData = JsonSerializer.Deserialize<QuizData>(json);
+
+            if (quizData == null || quizData.Quiz == null || quizData.Quiz.Count == 0)
+                return false;
+
+            // Reassign IDs sequentially starting from 1
+            for (int i = 0; i < quizData.Quiz.Count; i++)
+            {
+                quizData.Quiz[i].Id = i;
+            }
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var updatedJson = JsonSerializer.Serialize(quizData, options);
+            File.WriteAllText(filePath, updatedJson);
+
+            Console.WriteLine($"Slide IDs for quiz '{quizTitle}' have been reassigned.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reassigning slide IDs: {ex.Message}");
+            return false;
+        }
+    }
+
+
 
     public static QuizSlide GetSlideById(string quizTitle, int id)
     {
@@ -230,8 +269,11 @@ public static class QuizDataHandler
 
         foreach(QuizSlide slide in slides)
         {
-            if (slide.Id == id) returnSlide = slide;
-            break;
+            if (slide.Id == id) 
+            {
+                returnSlide = slide;
+                break;
+            }
         }
 
         return returnSlide;

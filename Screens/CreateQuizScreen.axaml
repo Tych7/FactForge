@@ -17,10 +17,10 @@
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Click="BackClick">
-                <Image Source="avares://DesktopApp/Assets/Icons/arrow.png"
-                    Stretch="Uniform"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"/>
+                <Border>
+                    <PathIcon
+                        Data="{StaticResource arrow_left_regular}" />
+                </Border>
             </Button>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="1080">
@@ -30,22 +30,22 @@
                         Classes="neon-icon-button"
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Top" 
-                        Click="NewPageClick">
-                        <Image Source="avares://DesktopApp/Assets/Icons/plus.png"
-                            Stretch="Uniform"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"/>
+                        Click="NewSlideClick">
+                        <Border>
+                            <PathIcon
+                                Data="{StaticResource add_regular}" />
+                        </Border>
                     </Button>
                     <Button
                         Width="96"
                         Classes="neon-icon-button"
                         HorizontalAlignment="Right" 
                         VerticalAlignment="Top" 
-                        Click="DeletePageClick">
-                        <Image Source="avares://DesktopApp/Assets/Icons/trash.png"
-                            Stretch="Uniform"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"/>
+                        Click="DeleteSlideClick">
+                        <Border>
+                            <PathIcon
+                                Data="{StaticResource delete_regular}" />
+                        </Border>
                     </Button>
                     <Border x:Name = "QuizOverview" Classes="neon-frame" Height="892" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
                 </Grid>
