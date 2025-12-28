@@ -47,7 +47,6 @@
         <Style Selector="Button.neon-icon-button:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="Black"/>
             <Setter Property="BorderBrush" Value="#AAFFFF"/>
-            <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Effect">
                 <DropShadowEffect 
                     Color="#00FFFF"
@@ -111,6 +110,7 @@
         </Style>
 
         <Style Selector="Button.neon-text-button:pointerover">
+            <Setter Property="BorderBrush" Value="#AAFFFF"/>
             <Setter Property="Effect">
                 <DropShadowEffect
                     Color="#00FFFF"
@@ -119,8 +119,6 @@
                     OffsetX="0"
                     OffsetY="0"/>
             </Setter>
-
-            <Setter Property="BorderBrush" Value="#AAFFFF"/>
         </Style>
 
 

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using static QuizSlide;
@@ -10,10 +8,15 @@ namespace DesktopApp;
 
 public class ModifyQuizHandler
 {
+    // --- Singleton instance --- 
+    private static readonly Lazy<ModifyQuizHandler> _instance = new(() => new ModifyQuizHandler()); 
+    public static ModifyQuizHandler Instance => _instance.Value;
+
     public List<QuizSlide>? slides;
     public QuizSlide? currentSelectedSlide;
+    private Button? insertButton;
     public string? currentSelectedSlideTypeIndex;
-    private readonly Dictionary<int, Button> overviewButtons = new();
+    public readonly Dictionary<int, Button> overviewButtons = new();
     private  Grid? quizPageGrid;
     private CurrentSlideData? returnData;
 
@@ -27,6 +30,8 @@ public class ModifyQuizHandler
 
     public ScrollViewer InitQuizOverview()
     {
+        OpenSlideById(0);
+
         int textIndex = 1;
         int questionIndex = 1;
 
@@ -43,26 +48,29 @@ public class ModifyQuizHandler
                 switch (slide.Type)
                 {
                     case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
-                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"Q{questionIndex}", questionIndex));
+                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide.Id, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
                     case var t when t == SlideTypes.OpenQuestion.ToString():
-                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"Q{questionIndex}", questionIndex));
+                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide.Id, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
                     case var t when t == SlideTypes.Text.ToString():
-                        quizOverviewPanel.Children.Add(CreateQuizOverviewButton(slide.Id, $"T{textIndex}", textIndex));
+                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide.Id, $"T{textIndex}", textIndex));
                         textIndex++;
                         break;
                 }
+                if (currentSelectedSlide?.Id == slide.Id) quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateInsertElement());
             }
         }
         else
         {
             Console.WriteLine("No questions sorted, slides is null");
         }
+
+        UpdateSelectedButtonBorder();   
 
         ScrollViewer quizOverview = new ScrollViewer
         {
@@ -71,7 +79,6 @@ public class ModifyQuizHandler
             Content = quizOverviewPanel
         };
 
-        OpenSlideById(0);
 
         return quizOverview;
     }
@@ -177,36 +184,7 @@ public class ModifyQuizHandler
         }
     }
 
-
-    private Button CreateQuizOverviewButton(int slideId, string content, int slideTypeIndex)
-    {
-        var button = new Button
-        {
-            Content = content,
-            Classes = { "neon-text-button" },
-            Margin = new Thickness(10,10,10,0),
-            Height = 80,
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-            Foreground = new SolidColorBrush(Color.Parse("#8C52FF")),
-            BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
-        };
-
-        button.Click += (_, _) => HandleSlideClick(slideId, slideTypeIndex);
-
-        overviewButtons[slideId] = button;
-        return button;
-    }
-
-    private void HandleSlideClick(int slideId, int slideTypeIndex)
-    {
-        // Save previous slide
-        WriteNewQuestionData();
-        
-        // Show new slide
-        SelectSlide(slideId, slideTypeIndex);
-    }
-
-    private void SelectSlide(int slideId, int slideTypeIndex)
+    public void SelectSlide(int slideId, int slideTypeIndex)
     {
         if (slides == null)
             return;

@@ -10,14 +10,11 @@ namespace DesktopApp;
 
 public partial class CreateQuizScreen : UserControl
 {
-    private ModifyQuizHandler? modifyQuizHandler;
-
     public CreateQuizScreen(string quizTitle)
     {
         InitializeComponent();
 
-        modifyQuizHandler = new ModifyQuizHandler();
-        modifyQuizHandler.SetQuizPageGrid(Quizpage);
+        ModifyQuizHandler.Instance.SetQuizPageGrid(Quizpage);
 
         LoadSlides(quizTitle);
         ElementHander.currentOpenQuizTitle = quizTitle;
@@ -25,11 +22,8 @@ public partial class CreateQuizScreen : UserControl
 
     private void LoadSlides(string quizTitle)
     {
-        if(modifyQuizHandler != null)
-        {
-            modifyQuizHandler.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
-            QuizOverview.Child = modifyQuizHandler.InitQuizOverview();
-        }
+        ModifyQuizHandler.Instance.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
+        QuizOverview.Child = ModifyQuizHandler.Instance.InitQuizOverview();
     }
 
     private void NewSlideClick(object? sender, RoutedEventArgs e)
@@ -44,7 +38,7 @@ public partial class CreateQuizScreen : UserControl
                 {
                     (bool result, int slideId) = QuizDataHandler.CreateNewSlide(ElementHander.currentOpenQuizTitle ?? "", type);
                     LoadSlides(ElementHander.currentOpenQuizTitle ?? "");
-                    modifyQuizHandler?.OpenSlideById(slideId);
+                    ModifyQuizHandler.Instance.OpenSlideById(slideId);
                 }
             }
         });
@@ -53,25 +47,25 @@ public partial class CreateQuizScreen : UserControl
 
     private void DeleteSlideClick(object? sender, RoutedEventArgs e)
     {
-        if(modifyQuizHandler?.currentSelectedSlide != null)
+        if(ModifyQuizHandler.Instance.currentSelectedSlide != null)
         {
-            var dialog = Dialog.AreYouSure( MainGrid, $"When you press the confim button slide '{modifyQuizHandler.currentSelectedSlideTypeIndex}' will be deleted.", () =>
+            var dialog = Dialog.AreYouSure( MainGrid, $"When you press the confim button slide '{ModifyQuizHandler.Instance.currentSelectedSlideTypeIndex}' will be deleted.", () =>
             {
-                bool deleteResult = QuizDataHandler.DeleteSlide(ElementHander.currentOpenQuizTitle ?? "", modifyQuizHandler.currentSelectedSlide.Id);
+                bool deleteResult = QuizDataHandler.DeleteSlide(ElementHander.currentOpenQuizTitle ?? "", ModifyQuizHandler.Instance.currentSelectedSlide.Id);
                 if (deleteResult)
                 {
                     bool reassignResult = QuizDataHandler.ReassignSlideIds(ElementHander.currentOpenQuizTitle ?? ""); 
                     if(reassignResult && ElementHander.currentOpenQuizTitle != null) LoadSlides(ElementHander.currentOpenQuizTitle);
                 } 
             });
-            MainGrid.Children.Add(dialog);
+            MainGrid.Children.Add(dialog); 
         }
     }
 
 
     private void BackClick(object? sender, RoutedEventArgs e)
     {
-        modifyQuizHandler?.WriteNewQuestionData();
+        ModifyQuizHandler.Instance.WriteNewQuestionData();
         
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

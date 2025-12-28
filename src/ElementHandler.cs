@@ -30,7 +30,6 @@ public static class ElementHander
     public static ComboBox OpenSlidePanelClick(QuizSlide slide)
     {
         StackPanel slideOptions = new StackPanel();
-
         ComboBox timeDropDown = new ComboBox();
         
 
@@ -308,9 +307,27 @@ public static class ElementHander
         while (slide.Answers.Count > count)
             slide.Answers.RemoveAt(slide.Answers.Count - 1);
 
+        List<string> currentOptions = [];
+        int oldOptionCount = 0;
+        if (currentAwnserOptions != null) oldOptionCount = currentAwnserOptions.Count();
+        int newOptionCount = int.Parse(currentAmountOfAnswers ?? "");
+
+        for(int i = 0; i < newOptionCount; i++)
+        {
+            if(currentAwnserOptions != null)
+            {
+                if(newOptionCount > oldOptionCount)
+                {
+                    if(newOptionCount - oldOptionCount > i) currentOptions.Add(currentAwnserOptions[i].Text ?? "");
+                    else currentOptions.Add("");
+                }
+                else currentOptions.Add(currentAwnserOptions[i].Text ?? "");
+            }
+        }
+
         (Grid newGrid, currentAwnserOptions) =
             MultipleChoiceOptionsElement.Create(
-                slide.Answers,
+                currentOptions,
                 ModifySlideElement.MultipleChoiceOptionColors,
                 currentCorrectAnswer ?? "",
                 currentAmountOfAnswers!,
