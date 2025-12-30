@@ -13,24 +13,31 @@ public class ModifyQuizHandler
     public static ModifyQuizHandler Instance => _instance.Value;
 
     public List<QuizSlide>? slides;
+    public event Action? QuizOverviewNeedsRefresh;
     public QuizSlide? currentSelectedSlide;
-    private Button? insertButton;
     public string? currentSelectedSlideTypeIndex;
     public readonly Dictionary<int, Button> overviewButtons = new();
-    private  Grid? quizPageGrid;
-    private CurrentSlideData? returnData;
+
+    private ScrollViewer? _quizOverview;
+    private  Grid? _quizPageGrid;
+    private CurrentSlideData? _returnData;
+    private bool _firstInit = false;
 
 
     public ModifyQuizHandler() {}
 
     public void SetQuizPageGrid(Grid grid)
     {
-        quizPageGrid = grid;
+        _quizPageGrid = grid;
     }
 
     public ScrollViewer InitQuizOverview()
     {
-        OpenSlideById(0);
+        if (_firstInit == false)
+        {
+            _firstInit = true; 
+            OpenSlideById(0);
+        }
 
         int textIndex = 1;
         int questionIndex = 1;
@@ -48,17 +55,17 @@ public class ModifyQuizHandler
                 switch (slide.Type)
                 {
                     case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
-                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide.Id, $"Q{questionIndex}", questionIndex));
+                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
                     case var t when t == SlideTypes.OpenQuestion.ToString():
-                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide.Id, $"Q{questionIndex}", questionIndex));
+                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
                     case var t when t == SlideTypes.Text.ToString():
-                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide.Id, $"T{textIndex}", textIndex));
+                        quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide, $"T{textIndex}", textIndex));
                         textIndex++;
                         break;
                 }
@@ -72,7 +79,7 @@ public class ModifyQuizHandler
 
         UpdateSelectedButtonBorder();   
 
-        ScrollViewer quizOverview = new ScrollViewer
+        _quizOverview = new ScrollViewer
         {
             VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
             HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
@@ -80,66 +87,66 @@ public class ModifyQuizHandler
         };
 
 
-        return quizOverview;
+        return _quizOverview;
     }
 
     public void WriteNewQuestionData()
     {
-        if (returnData != null && ElementHander.currentOpenQuizTitle != null)
+        if (_returnData != null && ElementHander.currentOpenQuizTitle != null)
         {
             QuizSlide slide;
-            if (returnData.Type == SlideTypes.Text.ToString())
+            if (_returnData.Type == SlideTypes.Text.ToString())
             {
                 int headerFontSize =
-                    int.TryParse(returnData.Header?.FontSize?.SelectedValue?.ToString(), out var h)
+                    int.TryParse(_returnData.Header?.FontSize?.SelectedValue?.ToString(), out var h)
                         ? h
-                        : returnData.Header?.Text?.FontSize is > 0
-                            ? (int)returnData.Header.Text.FontSize
+                        : _returnData.Header?.Text?.FontSize is > 0
+                            ? (int)_returnData.Header.Text.FontSize
                             : ElementHander.textSizes.headerTextSize;
 
                 int subTextFontSize =
-                    int.TryParse(returnData.SubText?.FontSize?.SelectedValue?.ToString(), out var s)
+                    int.TryParse(_returnData.SubText?.FontSize?.SelectedValue?.ToString(), out var s)
                         ? s
-                        : returnData.SubText?.Text?.FontSize is > 0
-                            ? (int)returnData.SubText.Text.FontSize
+                        : _returnData.SubText?.Text?.FontSize is > 0
+                            ? (int)_returnData.SubText.Text.FontSize
                             : ElementHander.textSizes.subtextTextSize;
 
                 slide = new QuizSlide
                 {
-                    Id = returnData.Id,
-                    Type = returnData.Type,
+                    Id = _returnData.Id,
+                    Type = _returnData.Type,
                     Header = new QuizSlideText
                     {
-                        Text = returnData.Header?.Text?.Text ?? "",
+                        Text = _returnData.Header?.Text?.Text ?? "",
                         FontSize = headerFontSize
                     },
                     SubText = new QuizSlideText
                     {
-                        Text = returnData.SubText?.Text?.Text ?? "",
+                        Text = _returnData.SubText?.Text?.Text ?? "",
                         FontSize = subTextFontSize
                     },
-                    BgImagePath = returnData.BgImagePath,
-                    Category = returnData.Category,
-                    ImagePath = returnData.ImagePath,
-                    AudioPath = returnData.AudioPath
+                    BgImagePath = _returnData.BgImagePath,
+                    Category = _returnData.Category,
+                    ImagePath = _returnData.ImagePath,
+                    AudioPath = _returnData.AudioPath
                 };
             }
             else
             {
                 List<string> newAnswers = [];
-                foreach (TextBox awnser in returnData.Answers ?? []) newAnswers.Add(awnser.Text ?? "");
+                foreach (TextBox awnser in _returnData.Answers ?? []) newAnswers.Add(awnser.Text ?? "");
                 slide = new QuizSlide
                 {
-                    Id = returnData.Id,
-                    Type = returnData.Type,
-                    Question = returnData.Question?.Text,
+                    Id = _returnData.Id,
+                    Type = _returnData.Type,
+                    Question = _returnData.Question?.Text,
                     Answers = newAnswers,
-                    CorrectAnswer = returnData.GetCurrentCorrectAnswer(),
-                    Time = int.Parse(returnData.Time?.SelectedValue?.ToString() ?? ""),
-                    BgImagePath = returnData.BgImagePath,
-                    Category = returnData.Category,
-                    ImagePath = returnData.ImagePath,
-                    AudioPath = returnData.AudioPath
+                    CorrectAnswer = _returnData.GetCurrentCorrectAnswer(),
+                    Time = int.Parse(_returnData.Time?.SelectedValue?.ToString() ?? ""),
+                    BgImagePath = _returnData.BgImagePath,
+                    Category = _returnData.Category,
+                    ImagePath = _returnData.ImagePath,
+                    AudioPath = _returnData.AudioPath
                 };
             }
             QuizDataHandler.UpdateSlide(ElementHander.currentOpenQuizTitle, slide);
@@ -201,25 +208,26 @@ public class ModifyQuizHandler
             switch (slide.Type)
             {
                 case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
-                    (slideToShow, returnData) = ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide, slideTypeIndex);
+                    (slideToShow, _returnData) = ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide, slideTypeIndex);
                     currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;
 
                 case var t when t == SlideTypes.OpenQuestion.ToString():
-                    (slideToShow, returnData) = ModifySlideElement.CreateOpenQuestionSlide(slide, slideTypeIndex);
+                    (slideToShow, _returnData) = ModifySlideElement.CreateOpenQuestionSlide(slide, slideTypeIndex);
                     currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;
 
                 default:
-                    (slideToShow, returnData) = ModifySlideElement.CreateTextSlide(slide);
+                    (slideToShow, _returnData) = ModifySlideElement.CreateTextSlide(slide);
                     currentSelectedSlideTypeIndex = $"T{slideTypeIndex}";
                     break;
             }
 
-            quizPageGrid?.Children.Clear();
-            quizPageGrid?.Children.Add(slideToShow);
+            _quizPageGrid?.Children.Clear();
+            _quizPageGrid?.Children.Add(slideToShow);
 
             UpdateSelectedButtonBorder();
+            QuizOverviewNeedsRefresh?.Invoke();
             return;
         }
     }

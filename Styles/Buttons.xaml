@@ -2,6 +2,35 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+        <Style Selector="Button.neon-empty-button">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#00FFFF"/>
+            <Setter Property="BorderThickness" Value="6"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Foreground" Value="#00FFFF"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="20"
+                    Opacity="1"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.neon-empty-button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#AAFFFF"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="30"
+                    Opacity="0.8"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
         <!-- Neon square button style -->
         <Style Selector="Button.neon-icon-button">
             <Setter Property="Width" Value="80"/>
@@ -81,7 +110,7 @@
                         Name="GlowBorder"
                         Background="Black"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                         
                         <Viewbox Stretch="Uniform">
@@ -110,7 +139,7 @@
         </Style>
 
         <Style Selector="Button.neon-text-button:pointerover">
-            <Setter Property="BorderBrush" Value="#AAFFFF"/>
+            <Setter Property="BorderBrush" Value="#FFFFFF"/>
             <Setter Property="Effect">
                 <DropShadowEffect
                     Color="#00FFFF"

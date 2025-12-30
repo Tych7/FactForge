@@ -15,16 +15,45 @@ public partial class CreateQuizScreen : UserControl
         InitializeComponent();
 
         ModifyQuizHandler.Instance.SetQuizPageGrid(Quizpage);
+        ModifyQuizHandler.Instance.QuizOverviewNeedsRefresh += RefreshQuizOverview;
+        CreateSlideOverviewElements.InsertSlide += InsertSlideClick;
 
-        LoadSlides(quizTitle);
+        FetchAndShowSlides(quizTitle);
         ElementHander.currentOpenQuizTitle = quizTitle;
     }
 
-    private void LoadSlides(string quizTitle)
+    private void FetchAndShowSlides(string quizTitle)
     {
         ModifyQuizHandler.Instance.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
         QuizOverview.Child = ModifyQuizHandler.Instance.InitQuizOverview();
     }
+
+    private void RefreshQuizOverview()
+    {
+        QuizOverview.Child = ModifyQuizHandler.Instance.InitQuizOverview();
+    }
+
+    private void InsertSlideClick()
+    {
+        List<string> TypeOptions = [];
+        foreach (SlideTypes type in Enum.GetValues(typeof(SlideTypes))) TypeOptions.Add(type.ToString());
+        (Grid dialogGrid, ComboBox slideTypeInput) = Dialog.CreateNewQuizSlide(MainGrid, "Add new slide", "Type", TypeOptions, SlideTypes.Text.ToString(), (selectedType) =>
+        {
+            foreach (SlideTypes type in Enum.GetValues(typeof(SlideTypes)))
+            {
+                if(type.ToString() == selectedType)
+                {
+                    if (ModifyQuizHandler.Instance.currentSelectedSlide != null)
+                    {
+                        bool result = QuizDataHandler.InsertSlideAtIndex(ElementHander.currentOpenQuizTitle ?? "", type, ModifyQuizHandler.Instance.currentSelectedSlide.Id + 1);
+                        FetchAndShowSlides(ElementHander.currentOpenQuizTitle ?? "");
+                    }
+                }
+            }
+        });
+        MainGrid.Children.Add(dialogGrid);
+    }
+
 
     private void NewSlideClick(object? sender, RoutedEventArgs e)
     {
@@ -37,7 +66,7 @@ public partial class CreateQuizScreen : UserControl
                 if(type.ToString() == selectedType)
                 {
                     (bool result, int slideId) = QuizDataHandler.CreateNewSlide(ElementHander.currentOpenQuizTitle ?? "", type);
-                    LoadSlides(ElementHander.currentOpenQuizTitle ?? "");
+                    FetchAndShowSlides(ElementHander.currentOpenQuizTitle ?? "");
                     ModifyQuizHandler.Instance.OpenSlideById(slideId);
                 }
             }
@@ -55,7 +84,8 @@ public partial class CreateQuizScreen : UserControl
                 if (deleteResult)
                 {
                     bool reassignResult = QuizDataHandler.ReassignSlideIds(ElementHander.currentOpenQuizTitle ?? ""); 
-                    if(reassignResult && ElementHander.currentOpenQuizTitle != null) LoadSlides(ElementHander.currentOpenQuizTitle);
+                    if(reassignResult && ElementHander.currentOpenQuizTitle != null) FetchAndShowSlides(ElementHander.currentOpenQuizTitle);
+                    ModifyQuizHandler.Instance.OpenSlideById(ModifyQuizHandler.Instance.currentSelectedSlide.Id);
                 } 
             });
             MainGrid.Children.Add(dialog); 
