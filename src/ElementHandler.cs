@@ -33,7 +33,7 @@ public static class ElementHander
         ComboBox timeDropDown = new ComboBox();
         
 
-        if(slide.Type == SlideTypes.Text.ToString())
+        if(slide.Type == SlideTypes.Text)
         {
             //TEXT SIZES OPTION
             (StackPanel headerTextSizeOption, currentheaderTextSizeDropDown) = CreateHeaderTextSizePanelOption(slide);
@@ -53,7 +53,7 @@ public static class ElementHander
             StackPanel correctAwnserOption = CreateCorrectAwnserPanelOption(slide);
             slideOptions.Children.Add(correctAwnserOption);
 
-            if (slide.Type == SlideTypes.MultipleChoiceQuestion.ToString())
+            if (slide.Type == SlideTypes.MultipleChoiceQuestion)
             {
                 //Amount of Options
                 StackPanel optionCountOption = CreateOptionCountPanelOption(slide);
@@ -137,7 +137,7 @@ public static class ElementHander
         StackPanel correctAwnserOption = new StackPanel{Orientation = Orientation.Vertical, VerticalAlignment = VerticalAlignment.Stretch, Margin = new Thickness(0,20,0,0)};
         TextBlock awnserTitle = new TextBlock {Text = "Correct Answer: ", Classes = {"neon-text"}, FontSize = 40,  VerticalAlignment= VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left}; correctAwnserOption.Children.Add(awnserTitle);
         
-        if (slide.Type == SlideTypes.MultipleChoiceQuestion.ToString())
+        if (slide.Type == SlideTypes.MultipleChoiceQuestion)
         {
             List<string> options = [];
             foreach(var option in currentAwnserOptions ?? []) {options.Add(option.Text ?? "");}
@@ -152,7 +152,7 @@ public static class ElementHander
                 }
             };
         }
-        else if(slide.Type == SlideTypes.OpenQuestion.ToString())
+        else if(slide.Type == SlideTypes.OpenQuestion)
         {
             currentCorrectAnswerTextBox = new TextBox { Classes = {"neon-input"}, Watermark = $"Anwser here", Text = currentCorrectAnswer, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(20,0,20,0)};
             currentCorrectAnswerTextBox.TextChanged += (_, __) =>

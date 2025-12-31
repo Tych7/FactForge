@@ -35,7 +35,7 @@ public partial class StartScreen : UserControl
         {
             QuizSlide q = QuizManager.GetNextQuestion();
 
-            if (q.Type == SlideTypes.Text.ToString())
+            if (q.Type == SlideTypes.Text)
             {
                 
             }

@@ -54,17 +54,17 @@ public class ModifyQuizHandler
             {
                 switch (slide.Type)
                 {
-                    case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
+                    case var t when t == SlideTypes.MultipleChoiceQuestion:
                         quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
-                    case var t when t == SlideTypes.OpenQuestion.ToString():
+                    case var t when t == SlideTypes.OpenQuestion:
                         quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide, $"Q{questionIndex}", questionIndex));
                         questionIndex++;
                         break;
 
-                    case var t when t == SlideTypes.Text.ToString():
+                    case var t when t == SlideTypes.Text:
                         quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateSlideElement(slide, $"T{textIndex}", textIndex));
                         textIndex++;
                         break;
@@ -95,7 +95,7 @@ public class ModifyQuizHandler
         if (_returnData != null && ElementHander.currentOpenQuizTitle != null)
         {
             QuizSlide slide;
-            if (_returnData.Type == SlideTypes.Text.ToString())
+            if (_returnData.Type == SlideTypes.Text)
             {
                 int headerFontSize =
                     int.TryParse(_returnData.Header?.FontSize?.SelectedValue?.ToString(), out var h)
@@ -169,24 +169,24 @@ public class ModifyQuizHandler
                 // Keep track of index for labeling
                 switch (slide.Type)
                 {
-                    case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
+                    case var t when t == SlideTypes.MultipleChoiceQuestion:
                         questionIndex++;
                         break;
-                    case var t when t == SlideTypes.OpenQuestion.ToString():
+                    case var t when t == SlideTypes.OpenQuestion:
                         questionIndex++;
                         break;
-                    case var t when t == SlideTypes.Text.ToString():
+                    case var t when t == SlideTypes.Text:
                         textIndex++;
                         break;
                 }
                 continue;
             }
 
-            int slideTypeIndex = slide.Type == SlideTypes.Text.ToString() ? textIndex : questionIndex;
+            int slideTypeIndex = slide.Type == SlideTypes.Text ? textIndex : questionIndex;
 
             SelectSlide(slide.Id, slideTypeIndex);
             currentSelectedSlide = slide;
-            currentSelectedSlideTypeIndex = slide.Type == SlideTypes.Text.ToString() ? $"T{slideTypeIndex}" : $"Q{slideTypeIndex}";
+            currentSelectedSlideTypeIndex = slide.Type == SlideTypes.Text ? $"T{slideTypeIndex}" : $"Q{slideTypeIndex}";
             return;
         }
     }
@@ -207,12 +207,12 @@ public class ModifyQuizHandler
 
             switch (slide.Type)
             {
-                case var t when t == SlideTypes.MultipleChoiceQuestion.ToString():
+                case var t when t == SlideTypes.MultipleChoiceQuestion:
                     (slideToShow, _returnData) = ModifySlideElement.CreateMultipleChoiceQuestionSlide(slide, slideTypeIndex);
                     currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;
 
-                case var t when t == SlideTypes.OpenQuestion.ToString():
+                case var t when t == SlideTypes.OpenQuestion:
                     (slideToShow, _returnData) = ModifySlideElement.CreateOpenQuestionSlide(slide, slideTypeIndex);
                     currentSelectedSlideTypeIndex = $"Q{slideTypeIndex}";
                     break;

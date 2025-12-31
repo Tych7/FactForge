@@ -15,7 +15,8 @@ public record QuizSlide
     public int Id { get; set; }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SlideTypes? Type { get; set; }
 
     [JsonPropertyName("header")]
     public QuizSlideText? Header { get; set; }

@@ -8,7 +8,7 @@ public record CurrentSlideData
 
     public int Id { get; set; }
 
-    public string? Type { get; set; }
+    public SlideTypes? Type { get; set; }
 
     public CurrentSlideText? Header { get; set; }
 
@@ -33,7 +33,7 @@ public record CurrentSlideData
 
     public string? GetCurrentCorrectAnswer()
     {
-        if (Type == SlideTypes.MultipleChoiceQuestion.ToString())
+        if (Type == SlideTypes.MultipleChoiceQuestion)
             return CorrectAnswerComboBox?.SelectedValue?.ToString();
         else
             return CorrectAnswer?.Text;

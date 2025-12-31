@@ -8,6 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using MsBox.Avalonia.ViewModels;
 using Tmds.DBus.Protocol;
+using static QuizSlide;
 
 namespace DesktopApp
 {
@@ -22,8 +23,18 @@ namespace DesktopApp
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Orientation = Orientation.Horizontal 
             };
+
+            Border slideElementIcon = new();
+            switch (slide.Type)
+            {
+                case SlideTypes.MultipleChoiceQuestion or SlideTypes.OpenQuestion:
+                    slideElementIcon = CreateSlideElementIcon("question_regular", 40,40);
+                    break;
+                case SlideTypes.Text:
+                    slideElementIcon = CreateSlideElementIcon("text_font_regular", 40,40);
+                    break;
+            }
             
-            Border slideElementIcon = CreateSlideElementIcon("question_regular", 40,40);
             contentGrid.Children.Add(slideElementIcon);
 
             var slideElementText = new TextBlock
@@ -99,8 +110,8 @@ namespace DesktopApp
                 Data = AppHandler.GetIcon(pathIconName),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Height = height - 10,
-                Width = width - 10,
+                Height = height - 20,
+                Width = width - 20,
                 Foreground = new SolidColorBrush(Color.Parse("#8C52FF")),
             };
 

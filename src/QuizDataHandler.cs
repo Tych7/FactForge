@@ -15,7 +15,7 @@ public static class QuizDataHandler
     private static QuizSlide defaultQuestionSlide = new QuizSlide
     {
         Id = 0,
-        Type = "",
+        Type = SlideTypes.MultipleChoiceQuestion,
         Question = string.Empty,
         Answers = [string.Empty, string.Empty, string.Empty, string.Empty],
         CorrectAnswer = string.Empty,
@@ -29,7 +29,7 @@ public static class QuizDataHandler
     private static QuizSlide defaultTextSlide = new QuizSlide
     {
         Id = 0,
-        Type = SlideTypes.Text.ToString(),
+        Type = SlideTypes.Text,
         Header = new QuizSlideText{Text = string.Empty, FontSize = 150},
         SubText = new QuizSlideText{Text = string.Empty, FontSize = 80},
         BgImagePath = "avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png",
@@ -107,7 +107,7 @@ public static class QuizDataHandler
             else
             {
                 slide = defaultQuestionSlide;
-                slide.Type = type.ToString();
+                slide.Type = type;
             }
             
             if (quizData == null)
@@ -153,7 +153,7 @@ public static class QuizDataHandler
             else
             {
                 slide = defaultQuestionSlide;
-                slide.Type = type.ToString();
+                slide.Type = type;
             }
 
             // Insert slide at specified index
