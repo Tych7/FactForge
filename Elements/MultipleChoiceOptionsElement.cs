@@ -166,7 +166,7 @@ namespace DesktopApp
             Grid.SetColumn(textBox, 1);
             optionFieldGrid.Children.Add(textGrid);
 
-            if(option == correctAnswer) optionFieldGrid.Children.Add(CreateCheckMark());
+            if(option == correctAnswer && option != "") optionFieldGrid.Children.Add(CreateCheckMark());
 
             border.Child = optionFieldGrid;
             return border;

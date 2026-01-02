@@ -6,6 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Microsoft.AspNetCore.SignalR;
+using static QuizSlide;
 
 namespace DesktopApp;
 
@@ -32,18 +33,25 @@ public partial class StartScreen : UserControl
     {
         if (App.HubContext != null)
         {
-            var q = QuizManager.GetNextQuestion();
+            QuizSlide q = QuizManager.GetNextQuestion();
 
-            await App.HubContext.Clients.All.SendAsync(
-                "NewQuestion",
-                new
-                {
-                    type = q.Type,       
-                    text = q.Question,
-                    choices = q.Answers,
-                    time = q.Time
-                }
-            );
+            if (q.Type == SlideTypes.Text)
+            {
+                
+            }
+            else
+            {
+                await App.HubContext.Clients.All.SendAsync(
+                    "NewQuestion",
+                    new
+                    {
+                        type = q.Type,       
+                        text = q.Question,
+                        choices = q.Answers,
+                        time = q.Time
+                    }
+                );
+            }      
         }
     }
 

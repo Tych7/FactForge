@@ -11,7 +11,7 @@ namespace DesktopApp
 {
     public static class SlidingPanelElement
     {
-        private static int transitionDuration = 300;
+        private static int transitionDuration = 200;
         private static bool _isOpen = false;
         public static Grid? Create(Grid parentGrid, StackPanel scrollFeatureContent, string header, int width)
         {

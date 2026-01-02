@@ -30,11 +30,10 @@ public static class ElementHander
     public static ComboBox OpenSlidePanelClick(QuizSlide slide)
     {
         StackPanel slideOptions = new StackPanel();
-
         ComboBox timeDropDown = new ComboBox();
         
 
-        if(slide.Type == SlideTypes.Text.ToString())
+        if(slide.Type == SlideTypes.Text)
         {
             //TEXT SIZES OPTION
             (StackPanel headerTextSizeOption, currentheaderTextSizeDropDown) = CreateHeaderTextSizePanelOption(slide);
@@ -54,7 +53,7 @@ public static class ElementHander
             StackPanel correctAwnserOption = CreateCorrectAwnserPanelOption(slide);
             slideOptions.Children.Add(correctAwnserOption);
 
-            if (slide.Type == SlideTypes.MultipleChoiceQuestion.ToString())
+            if (slide.Type == SlideTypes.MultipleChoiceQuestion)
             {
                 //Amount of Options
                 StackPanel optionCountOption = CreateOptionCountPanelOption(slide);
@@ -138,7 +137,7 @@ public static class ElementHander
         StackPanel correctAwnserOption = new StackPanel{Orientation = Orientation.Vertical, VerticalAlignment = VerticalAlignment.Stretch, Margin = new Thickness(0,20,0,0)};
         TextBlock awnserTitle = new TextBlock {Text = "Correct Answer: ", Classes = {"neon-text"}, FontSize = 40,  VerticalAlignment= VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left}; correctAwnserOption.Children.Add(awnserTitle);
         
-        if (slide.Type == SlideTypes.MultipleChoiceQuestion.ToString())
+        if (slide.Type == SlideTypes.MultipleChoiceQuestion)
         {
             List<string> options = [];
             foreach(var option in currentAwnserOptions ?? []) {options.Add(option.Text ?? "");}
@@ -153,7 +152,7 @@ public static class ElementHander
                 }
             };
         }
-        else if(slide.Type == SlideTypes.OpenQuestion.ToString())
+        else if(slide.Type == SlideTypes.OpenQuestion)
         {
             currentCorrectAnswerTextBox = new TextBox { Classes = {"neon-input"}, Watermark = $"Anwser here", Text = currentCorrectAnswer, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(20,0,20,0)};
             currentCorrectAnswerTextBox.TextChanged += (_, __) =>
@@ -308,9 +307,27 @@ public static class ElementHander
         while (slide.Answers.Count > count)
             slide.Answers.RemoveAt(slide.Answers.Count - 1);
 
+        List<string> currentOptions = [];
+        int oldOptionCount = 0;
+        if (currentAwnserOptions != null) oldOptionCount = currentAwnserOptions.Count();
+        int newOptionCount = int.Parse(currentAmountOfAnswers ?? "");
+
+        for(int i = 0; i < newOptionCount; i++)
+        {
+            if(currentAwnserOptions != null)
+            {
+                if(newOptionCount > oldOptionCount)
+                {
+                    if(newOptionCount - oldOptionCount > i) currentOptions.Add(currentAwnserOptions[i].Text ?? "");
+                    else currentOptions.Add("");
+                }
+                else currentOptions.Add(currentAwnserOptions[i].Text ?? "");
+            }
+        }
+
         (Grid newGrid, currentAwnserOptions) =
             MultipleChoiceOptionsElement.Create(
-                slide.Answers,
+                currentOptions,
                 ModifySlideElement.MultipleChoiceOptionColors,
                 currentCorrectAnswer ?? "",
                 currentAmountOfAnswers!,

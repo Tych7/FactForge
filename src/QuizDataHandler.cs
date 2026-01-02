@@ -15,7 +15,7 @@ public static class QuizDataHandler
     private static QuizSlide defaultQuestionSlide = new QuizSlide
     {
         Id = 0,
-        Type = "",
+        Type = SlideTypes.MultipleChoiceQuestion,
         Question = string.Empty,
         Answers = [string.Empty, string.Empty, string.Empty, string.Empty],
         CorrectAnswer = string.Empty,
@@ -29,7 +29,7 @@ public static class QuizDataHandler
     private static QuizSlide defaultTextSlide = new QuizSlide
     {
         Id = 0,
-        Type = SlideTypes.Text.ToString(),
+        Type = SlideTypes.Text,
         Header = new QuizSlideText{Text = string.Empty, FontSize = 150},
         SubText = new QuizSlideText{Text = string.Empty, FontSize = 80},
         BgImagePath = "avares://DesktopApp/Assets/Backgrounds/BricksDesktop.png",
@@ -96,12 +96,7 @@ public static class QuizDataHandler
     public static (bool result, int index) CreateNewSlide(string quizTitle, SlideTypes type)
     {
         var filePath = GetFileNameByTitle(quizTitle);
-
-        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
-        {
-            Console.WriteLine($"Quiz '{quizTitle}' not found.");
-            return (false, 0);
-        }
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return (false , 0);
 
         try
         {
@@ -112,7 +107,7 @@ public static class QuizDataHandler
             else
             {
                 slide = defaultQuestionSlide;
-                slide.Type = type.ToString();
+                slide.Type = type;
             }
             
             if (quizData == null)
@@ -139,15 +134,52 @@ public static class QuizDataHandler
         }
     }
 
+    public static bool InsertSlideAtIndex(string quizTitle, SlideTypes type, int index)
+    {
+        var filePath = GetFileNameByTitle(quizTitle);
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return false;
+
+        try
+        {
+            var json = File.ReadAllText(filePath);
+            var quizData = JsonSerializer.Deserialize<QuizData>(json);
+
+            if (quizData == null)
+                return false;
+
+            // Create the new slide
+            QuizSlide slide;
+            if (type == SlideTypes.Text) slide = defaultTextSlide;
+            else
+            {
+                slide = defaultQuestionSlide;
+                slide.Type = type;
+            }
+
+            // Insert slide at specified index
+            if (index < 0) index = 0;
+            if (index > quizData.Quiz.Count) index = quizData.Quiz.Count;
+            quizData.Quiz.Insert(index, slide);
+
+            // Save temporarily to file so ReassignSlideIds can work
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            File.WriteAllText(filePath, JsonSerializer.Serialize(quizData, options));
+
+            // Reassign IDs to ensure sequential numbering
+            return ReassignSlideIds(quizTitle);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error inserting slide: {ex.Message}");
+            return false;
+        }
+    }
+
+
     public static bool DeleteSlide(string quizTitle, int questionId)
     {
         var filePath = GetFileNameByTitle(quizTitle);
-
-        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
-        {
-            Console.WriteLine($"Quiz '{quizTitle}' not found.");
-            return false;
-        }
+        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return false;
 
         try
         {
@@ -171,7 +203,6 @@ public static class QuizDataHandler
             var updatedJson = JsonSerializer.Serialize(quizData, options);
             File.WriteAllText(filePath, updatedJson);
 
-            Console.WriteLine($"Question {questionId} deleted from quiz '{quizTitle}'.");
             return true;
         }
         catch (Exception ex)
@@ -250,7 +281,6 @@ public static class QuizDataHandler
             var updatedJson = JsonSerializer.Serialize(quizData, options);
             File.WriteAllText(filePath, updatedJson);
 
-            Console.WriteLine($"Slide IDs for quiz '{quizTitle}' have been reassigned.");
             return true;
         }
         catch (Exception ex)
@@ -314,6 +344,8 @@ public static class QuizDataHandler
             var extractedTitle = ExtractVarFromFile(file, "title");
             if (extractedTitle == title) return file;
         }
+
+        Console.WriteLine($"Quiz '{title}' not found.");
 
         return string.Empty;
     }
