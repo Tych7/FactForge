@@ -1,20 +1,15 @@
-
 using System;
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Layout;
 using Avalonia.Media;
-using MsBox.Avalonia.ViewModels;
-using Tmds.DBus.Protocol;
 using static QuizSlide;
 
 namespace DesktopApp
 {
     public static class CreateSlideOverviewElements
     {   
-        public static event Action? InsertSlide; 
+        public static event Action<int>? InsertSlide;
         public static Button CreateSlideElement(QuizSlide slide, string content, int slideTypeIndex)
         {
             var contentGrid = new StackPanel
@@ -56,49 +51,39 @@ namespace DesktopApp
                 Classes = {"neon-empty-button"}
             };
 
+            // left click
             button.Click += (_, _) =>
             {
-                // Save previous slide
                 ModifyQuizHandler.Instance.WriteNewQuestionData();
-                
-                // Show new slide
                 ModifyQuizHandler.Instance.SelectSlide(slide.Id, slideTypeIndex);
-
             };
 
+            // --- Context menu ---
+            var insertBefore = new MenuItem { Header = "Insert slide before", FontSize = 18 };
+            insertBefore.Click += (_, _) =>
+            {
+                ModifyQuizHandler.Instance.WriteNewQuestionData();
+                ModifyQuizHandler.Instance.SelectSlide(slide.Id, slideTypeIndex);
+                if (InsertSlide != null && ModifyQuizHandler.Instance.currentSelectedSlide != null) InsertSlide.Invoke(ModifyQuizHandler.Instance.currentSelectedSlide.Id);
+            };
+
+            var insertAfter = new MenuItem { Header = "Insert slide after", FontSize = 18 };
+            insertAfter.Click += (_, _) =>
+            {
+                ModifyQuizHandler.Instance.WriteNewQuestionData();
+                ModifyQuizHandler.Instance.SelectSlide(slide.Id, slideTypeIndex);
+                if (InsertSlide != null && ModifyQuizHandler.Instance.currentSelectedSlide != null) InsertSlide.Invoke(ModifyQuizHandler.Instance.currentSelectedSlide.Id + 1);
+            };
+
+            var contextMenu = new ContextMenu();
+            contextMenu.Items.Add(insertBefore);
+            contextMenu.Items.Add(insertAfter);
+
+            // attach context menu to button
+            button.ContextMenu = contextMenu;
+
+            // Save button reference
             ModifyQuizHandler.Instance.overviewButtons[slide.Id] = button;
-            return button;
-        }
-
-        public static Button CreateInsertElement()
-        {
-            var addIcon = new PathIcon
-            {
-                Data = AppHandler.GetIcon("add_regular"),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 20,
-                Width = 20
-            };
-
-            Button button = new Button
-            {
-                Height = 50,
-                Width = 50,
-                Classes = {"neon-icon-button"},
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                BorderThickness = new Thickness(3),
-                CornerRadius = new CornerRadius(30),
-                Content = new Border { Child = addIcon },                
-                Margin = new Thickness(0,10,0,0)
-            };
-
-            button.Click += (_, _) =>
-            {
-                Console.WriteLine($"Inserting slide after slide: {ModifyQuizHandler.Instance?.currentSelectedSlide?.Id}");
-                if (InsertSlide != null) InsertSlide.Invoke();
-            };
 
             return button;
         }

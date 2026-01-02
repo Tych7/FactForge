@@ -203,7 +203,6 @@ public static class QuizDataHandler
             var updatedJson = JsonSerializer.Serialize(quizData, options);
             File.WriteAllText(filePath, updatedJson);
 
-            Console.WriteLine($"Question {questionId} deleted from quiz '{quizTitle}'.");
             return true;
         }
         catch (Exception ex)
@@ -282,7 +281,6 @@ public static class QuizDataHandler
             var updatedJson = JsonSerializer.Serialize(quizData, options);
             File.WriteAllText(filePath, updatedJson);
 
-            Console.WriteLine($"Slide IDs for quiz '{quizTitle}' have been reassigned.");
             return true;
         }
         catch (Exception ex)

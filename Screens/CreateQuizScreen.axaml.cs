@@ -13,6 +13,7 @@ public partial class CreateQuizScreen : UserControl
     public CreateQuizScreen(string quizTitle)
     {
         InitializeComponent();
+        ModifyQuizHandler.Instance.FirstInit = false;
 
         ModifyQuizHandler.Instance.SetQuizPageGrid(Quizpage);
         ModifyQuizHandler.Instance.QuizOverviewNeedsRefresh += RefreshQuizOverview;
@@ -33,7 +34,7 @@ public partial class CreateQuizScreen : UserControl
         QuizOverview.Child = ModifyQuizHandler.Instance.InitQuizOverview();
     }
 
-    private void InsertSlideClick()
+    private void InsertSlideClick(int InsertId)
     {
         List<string> TypeOptions = [];
         foreach (SlideTypes type in Enum.GetValues(typeof(SlideTypes))) TypeOptions.Add(type.ToString());
@@ -45,8 +46,9 @@ public partial class CreateQuizScreen : UserControl
                 {
                     if (ModifyQuizHandler.Instance.currentSelectedSlide != null)
                     {
-                        bool result = QuizDataHandler.InsertSlideAtIndex(ElementHander.currentOpenQuizTitle ?? "", type, ModifyQuizHandler.Instance.currentSelectedSlide.Id + 1);
+                        bool result = QuizDataHandler.InsertSlideAtIndex(ElementHander.currentOpenQuizTitle ?? "", type, InsertId);
                         FetchAndShowSlides(ElementHander.currentOpenQuizTitle ?? "");
+                        ModifyQuizHandler.Instance.OpenSlideById(InsertId);
                     }
                 }
             }
@@ -85,7 +87,14 @@ public partial class CreateQuizScreen : UserControl
                 {
                     bool reassignResult = QuizDataHandler.ReassignSlideIds(ElementHander.currentOpenQuizTitle ?? ""); 
                     if(reassignResult && ElementHander.currentOpenQuizTitle != null) FetchAndShowSlides(ElementHander.currentOpenQuizTitle);
-                    ModifyQuizHandler.Instance.OpenSlideById(ModifyQuizHandler.Instance.currentSelectedSlide.Id);
+
+                    int slideIdToSelect = 0;
+                    if(ModifyQuizHandler.Instance.currentSelectedSlide.Id == ModifyQuizHandler.Instance.slides?.Count)
+                    {
+                        slideIdToSelect = ModifyQuizHandler.Instance.currentSelectedSlide.Id - 1;
+                    }
+                    else slideIdToSelect = ModifyQuizHandler.Instance.currentSelectedSlide.Id;
+                    ModifyQuizHandler.Instance.OpenSlideById(slideIdToSelect);
                 } 
             });
             MainGrid.Children.Add(dialog); 

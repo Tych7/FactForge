@@ -17,12 +17,11 @@ public class ModifyQuizHandler
     public QuizSlide? currentSelectedSlide;
     public string? currentSelectedSlideTypeIndex;
     public readonly Dictionary<int, Button> overviewButtons = new();
+    public bool FirstInit = false;
 
     private ScrollViewer? _quizOverview;
     private  Grid? _quizPageGrid;
     private CurrentSlideData? _returnData;
-    private bool _firstInit = false;
-
 
     public ModifyQuizHandler() {}
 
@@ -33,9 +32,9 @@ public class ModifyQuizHandler
 
     public ScrollViewer InitQuizOverview()
     {
-        if (_firstInit == false)
+        if (FirstInit == false)
         {
-            _firstInit = true; 
+            FirstInit = true; 
             OpenSlideById(0);
         }
 
@@ -50,8 +49,10 @@ public class ModifyQuizHandler
 
         if(slides != null)
         {
+
             foreach (QuizSlide slide in slides)
             {
+                // if (currentSelectedSlide?.Id == slide.Id && currentSelectedSlide?.Id == 0) quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateInsertElement());
                 switch (slide.Type)
                 {
                     case var t when t == SlideTypes.MultipleChoiceQuestion:
@@ -69,7 +70,7 @@ public class ModifyQuizHandler
                         textIndex++;
                         break;
                 }
-                if (currentSelectedSlide?.Id == slide.Id) quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateInsertElement());
+                // if (currentSelectedSlide?.Id == slide.Id) quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateInsertElement());
             }
         }
         else
