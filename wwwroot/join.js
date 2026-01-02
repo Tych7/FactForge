@@ -48,7 +48,8 @@ function renderQuestion(q) {
     toggleScreens("waitingScreen"); // go back to waiting after time runs out
   });
 
-  if (q.type === "OpenQuestion") {
+  console.log(q.type);
+  if (q.type === 1) {
     renderOpenQuestion(choicesDiv);
   } else {
     renderMultipleChoice(q.choices, choicesDiv);
