@@ -1,11 +1,7 @@
 using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
-using Avalonia.VisualTree;
 
 namespace DesktopApp
 {
@@ -16,7 +12,7 @@ namespace DesktopApp
             Border elementBorder = new Border
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Avalonia.Thickness(10, 10, 10, 0),
+                Margin = new Avalonia.Thickness(20, 10, 20, 0),
                 BorderThickness = new Avalonia.Thickness(0,0,0,2),
                 BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
             };

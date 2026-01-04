@@ -18,15 +18,40 @@ public partial class QuizLibraryScreen : UserControl
     private void InitQuizScrollView()
     {
         QuizListPanel.Children.Clear();
+        ScrollViewer libScrollView = new ScrollViewer
+        {
+            VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled
+        };
+        
+        StackPanel libStackPanel = new StackPanel
+        {
+            Orientation = Avalonia.Layout.Orientation.Vertical,
+            Width = 550
+        };
         foreach (var quizTitle in QuizDataHandler.GetAllQuizTitles()){
-            AddNewQuizInstance(quizTitle);
+            var quizLibScrollElement = QuizLibScrollElement.Create(quizTitle, DeleteQuizClick, EditQuizClick);
+            libStackPanel.Children.Add(quizLibScrollElement);
         }
+        libScrollView.Content = libStackPanel;
+        Grid quizLibTabsElement = QuizLibTabsElement.Create(500, 650, libScrollView, OnTabOneClick, OnTabTwoClick, OnTabThreeClick);
+
+        QuizListPanel.Children.Add(quizLibTabsElement);
     }
 
-    private void AddNewQuizInstance(string QuizTitle)
+    private void OnTabOneClick()
     {
-        var quizLibScrollElement = QuizLibScrollElement.Create(QuizTitle, DeleteQuizClick, EditQuizClick);
-        QuizListPanel.Children.Add(quizLibScrollElement);
+        
+    }
+
+    private void OnTabTwoClick()
+    {
+        
+    }
+
+    private void OnTabThreeClick()
+    {
+        
     }
 
     private void DeleteQuizClick(string QuizTitle)
@@ -37,12 +62,6 @@ public partial class QuizLibraryScreen : UserControl
             if (result) InitQuizScrollView();
         });
         MainGrid.Children.Add(dialog);
-    }
-
-
-    public void AddQuizButtonClick(object? sender, RoutedEventArgs e)
-    {
-        AddNewQuizInstance("test");
     }
 
     public void CreateNewQuizClick(object? sender, RoutedEventArgs e)
