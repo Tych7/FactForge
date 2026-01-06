@@ -45,16 +45,8 @@
                 Foreground= "#8C52FF"
             />
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <!-- Quiz Scroll View -->
-                <Grid x:Name="QuizListPanel" Height="500" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                    
-                <!-- Quiz Details -->
-                <Border Classes="neon-frame" Height="500" Width="450" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    
-                </Border>
-            </StackPanel>
-            
+            <Grid x:Name="QuizInteraction" Height="500" Width="1100" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,20,0"/>
+
         </Grid>
     </Viewbox>         
 </UserControl>

@@ -7,7 +7,7 @@ namespace DesktopApp
 {
     public static class QuizLibScrollElement
     {
-        public static Border Create(string QuizTitle, Action<string> onDelete, Action<string> onEdit)
+        public static Border Create(string QuizTitle, Action<string> onQuizClick)
         {
             Border elementBorder = new Border
             {
@@ -22,67 +22,16 @@ namespace DesktopApp
                 Margin = new Avalonia.Thickness(0,0,0,15)
             };
 
-            TextBlock quizTitle = new TextBlock
+            Button quizButton = new Button
             {
-                Classes = { "neon-text" },
                 FontSize = 50,
-                Text = QuizTitle,
+                Content = QuizTitle,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left
             };
-            mainGrid.Children.Add(quizTitle); 
+            quizButton.Click += (_, __) => onQuizClick?.Invoke(QuizTitle);
+            mainGrid.Children.Add(quizButton); 
 
-
-            StackPanel buttonUnit = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Right
-            };
-
-            
-            var editIcon = new PathIcon
-            {
-                Data = AppHandler.GetIcon("edit_regular"),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 30,
-                Width = 30
-            };
-            Button editButton = new Button
-            {
-                Height = 60,
-                Width = 60,
-                Classes = {"neon-icon-button"},
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center,
-                Content = new Border { Child = editIcon },                
-                Margin = new Avalonia.Thickness(0,0,10,0)
-            };
-            editButton.Click += (_, __) => onEdit?.Invoke(QuizTitle);
-            buttonUnit.Children.Add(editButton);
-
-            var deleteButtonIcon = new PathIcon
-            {
-                Data = AppHandler.GetIcon("delete_regular"),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 30,
-                Width = 30
-            };
-            Button deleteButton = new Button
-            {
-                Height = 60,
-                Width = 60,
-                Classes = {"neon-icon-button"},
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center,
-                Content = new Border { Child = deleteButtonIcon },
-            };
-            deleteButton.Click += (_, __) => onDelete?.Invoke(QuizTitle);
-            buttonUnit.Children.Add(deleteButton);
-
-            mainGrid.Children.Add(buttonUnit);
 
             elementBorder.Child = mainGrid;
 
