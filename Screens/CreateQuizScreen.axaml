@@ -22,6 +22,16 @@
                         Data="{StaticResource arrow_left_regular}" />
                 </Border>
             </Button>
+
+
+            <Grid  
+                x:Name = "QuizTitleHeader"
+                VerticalAlignment = "Top"
+                HorizontalAlignment = "Left"
+                Height = "80"
+                Width = "500"
+                Margin = "200,0,0,0"
+            />
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="1080">
                 <Grid Height="972" Width="192" VerticalAlignment="Bottom">

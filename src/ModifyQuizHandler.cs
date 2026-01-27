@@ -151,7 +151,7 @@ public class ModifyQuizHandler
                 };
             }
             QuizDataHandler.UpdateSlide(ElementHander.currentOpenQuizTitle, slide);
-            slides = QuizDataHandler.GetAllQuizSlides(ElementHander.currentOpenQuizTitle);
+            slides = QuizDataHandler.GetQuizData(ElementHander.currentOpenQuizTitle).Quiz;
         }
     }
 
@@ -232,7 +232,6 @@ public class ModifyQuizHandler
             return;
         }
     }
-
 
     private void UpdateSelectedButtonBorder()
     {

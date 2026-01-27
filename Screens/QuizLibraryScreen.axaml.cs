@@ -8,6 +8,7 @@ namespace DesktopApp;
 
 public partial class QuizLibraryScreen : UserControl
 {
+    private StackPanel? libStackPanel;
     private enum quizFilter
     {
         alphabetical,
@@ -23,31 +24,37 @@ public partial class QuizLibraryScreen : UserControl
 
     private void InitQuizLibScrollView()
     {
-        QuizInteraction.Children.Clear();
+        QuizLibScrollView.Children.Clear();
         ScrollViewer libScrollView = new ScrollViewer
         {
             VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
             HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled
         };
         
-        StackPanel libStackPanel = new StackPanel
+        libStackPanel = new StackPanel
         {
             Orientation = Avalonia.Layout.Orientation.Vertical,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
         };
 
-        foreach (var quizTitle in QuizDataHandler.GetAllQuizTitles()){
-            var quizLibScrollElement = QuizLibScrollElement.Create(quizTitle, onQuizClick);
+        var allQuizTitles = QuizDataHandler.GetAllQuizTitles();
+        for (int i = 0; i < allQuizTitles.Count; i++)
+        {
+            if(i == 0) QuizLibDetailsElement.selectedQuizTitle = allQuizTitles[i];
+            var quizLibScrollElement = QuizLibScrollElement.Create(i, allQuizTitles[i], onQuizClick);
             libStackPanel.Children.Add(quizLibScrollElement);
         }
         libScrollView.Content = libStackPanel;
 
         Grid quizLibScrollViewElement = QuizLibScrollViewElement.Create(600, libScrollView, OnTabOneClick, OnTabTwoClick, OnTabThreeClick);
-        QuizInteraction.Children.Add(quizLibScrollViewElement);
+        QuizLibScrollView.Children.Add(quizLibScrollViewElement);
+
+        markSelectedQuiz(0);
     }
 
     private void InitQuizLibDetails()
     {
+        QuizInteraction.Children.Clear();
         Border quizLibDetailsElement = QuizLibDetailsElement.Create(450, DeleteQuizClick, EditQuizClick, StartClick);
         QuizInteraction.Children.Add(quizLibDetailsElement);
     }
@@ -57,10 +64,30 @@ public partial class QuizLibraryScreen : UserControl
         Console.WriteLine($"Starting quiz '{QuizLibDetailsElement.selectedQuizTitle}'");
     }
 
-    private void onQuizClick(string quizTitle)
+    private void onQuizClick(int id, string quizTitle)
     {
         QuizLibDetailsElement.selectedQuizTitle = quizTitle;
+        markSelectedQuiz(id);
+
         InitQuizLibDetails();
+    }
+
+    private void markSelectedQuiz(int id)
+    {
+        if(libStackPanel != null)
+        {
+            foreach(var child in libStackPanel.Children)
+            {
+                if (child is Border border && border.Child != null)
+                {
+                    if(border.Child is Button button && button.Name != null)
+                    {
+                        if (int.Parse(button.Name) == id) button.BorderThickness = new Thickness(3);
+                        else button.BorderThickness = new Thickness(0);
+                    }
+                }
+            }
+        }
     }
 
     private void OnTabOneClick()

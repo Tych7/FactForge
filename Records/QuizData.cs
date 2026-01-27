@@ -4,17 +4,17 @@ using System.Text.Json.Serialization;
 public record QuizData
 {
     [JsonPropertyName("id")]
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     [JsonPropertyName("favorite")]
-    public required bool Favorite { get; set; }
+    public bool Favorite { get; set; }
 
     [JsonPropertyName("title")]
-    public required string Title { get; set; }
+    public string? Title { get; set; }
 
     [JsonPropertyName("quiz")]
-    public required List<QuizSlide> Quiz { get; set; }
+    public List<QuizSlide>? Quiz { get; set; }
 
     [JsonPropertyName("timestamp")]
-    public required string Timestamp { get; set; }
+    public string? Timestamp { get; set; }
 }

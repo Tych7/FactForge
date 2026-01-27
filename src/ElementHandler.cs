@@ -250,6 +250,7 @@ public static class ElementHander
             textBox.FontSize = best;
         }
 
+        textBox.AcceptsReturn = wrapText;
         textBox.AttachedToVisualTree += (_, _) => Resize();
         textBox.SizeChanged += (_, _) => Resize();
         textBox.TextChanged += (_, _) => Resize();

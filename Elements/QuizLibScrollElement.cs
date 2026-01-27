@@ -7,7 +7,7 @@ namespace DesktopApp
 {
     public static class QuizLibScrollElement
     {
-        public static Border Create(string QuizTitle, Action<string> onQuizClick)
+        public static Border Create(int id, string QuizTitle, Action<int, string> onQuizClick)
         {
             Border elementBorder = new Border
             {
@@ -17,23 +17,32 @@ namespace DesktopApp
                 BorderBrush = new SolidColorBrush(Color.Parse("#00FFFF")),
             };
 
-            Grid mainGrid = new Grid
-            {
-                Margin = new Avalonia.Thickness(0,0,0,15)
-            };
-
             Button quizButton = new Button
             {
+                Name = id.ToString(),
+                Height = 60,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Avalonia.Thickness(0,0,0,15),
                 FontSize = 50,
                 Content = QuizTitle,
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Left
+                Classes = {"neon-text-button"},
+                BorderThickness = new Avalonia.Thickness(0),
+                Foreground = SolidColorBrush.Parse("#8C52FF"),
+                BorderBrush = new SolidColorBrush(Color.Parse("#FFFFFF")),
+                Effect = new DropShadowEffect
+                {
+                    Color = Color.Parse("#00000000"),
+                    BlurRadius = 0,
+                    OffsetX = 0,
+                    OffsetY = 0,
+                    Opacity = 0
+                }
+
             };
-            quizButton.Click += (_, __) => onQuizClick?.Invoke(QuizTitle);
-            mainGrid.Children.Add(quizButton); 
+            quizButton.Click += (_, __) => onQuizClick?.Invoke(id, QuizTitle);
 
-
-            elementBorder.Child = mainGrid;
+            elementBorder.Child = quizButton;
 
             return elementBorder;
         }

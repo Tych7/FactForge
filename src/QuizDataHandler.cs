@@ -114,18 +114,26 @@ public static class QuizDataHandler
                 return (false, 0);
 
             // Assign next available question ID
-            int nextId = quizData.Quiz.Count == 0 ? 0 : quizData.Quiz.Max(q => q.Id) + 1;
-            slide.Id = nextId;
+            if(quizData.Quiz != null)
+            {
+                int nextId = quizData.Quiz.Count == 0 ? 0 : quizData.Quiz.Max(q => q.Id) + 1;
+                slide.Id = nextId;
 
-            quizData.Quiz.Add(slide);
+                quizData.Quiz.Add(slide);
 
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            var updatedJson = JsonSerializer.Serialize(quizData, options);
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                var updatedJson = JsonSerializer.Serialize(quizData, options);
 
-            File.WriteAllText(filePath, updatedJson);
+                File.WriteAllText(filePath, updatedJson);
 
-            Console.WriteLine($"Question added to quiz '{quizTitle}'.");
-            return (true, nextId);
+                Console.WriteLine($"Question added to quiz '{quizTitle}'.");
+                return (true, nextId);
+            }
+            else
+            {
+                throw new Exception();
+            }
+            
         }
         catch (Exception ex)
         {
@@ -158,15 +166,24 @@ public static class QuizDataHandler
 
             // Insert slide at specified index
             if (index < 0) index = 0;
-            if (index > quizData.Quiz.Count) index = quizData.Quiz.Count;
-            quizData.Quiz.Insert(index, slide);
 
-            // Save temporarily to file so ReassignSlideIds can work
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            File.WriteAllText(filePath, JsonSerializer.Serialize(quizData, options));
+            if(quizData.Quiz != null)
+            {
+                if (index > quizData.Quiz.Count) index = quizData.Quiz.Count;
+                quizData.Quiz.Insert(index, slide);
 
-            // Reassign IDs to ensure sequential numbering
-            return ReassignSlideIds(quizTitle);
+                // Save temporarily to file so ReassignSlideIds can work
+                var options = new JsonSerializerOptions { WriteIndented = true };
+                File.WriteAllText(filePath, JsonSerializer.Serialize(quizData, options));
+
+                // Reassign IDs to ensure sequential numbering
+                return ReassignSlideIds(quizTitle);
+            }
+            else
+            {
+                throw new Exception();
+            }
+            
         }
         catch (Exception ex)
         {
@@ -212,6 +229,22 @@ public static class QuizDataHandler
         }
     }
 
+    public static bool ReplaceQuizData(string currentQuizTitle, QuizData newQuizData)
+    {
+        if(newQuizData.Title != null)
+        {
+            DeleteQuiz(currentQuizTitle);
+            CreateQuiz(newQuizData.Title, newQuizData.Quiz);
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Title of replacement quizdata was null");
+            return false;
+        }
+        
+    }
+
     public static bool UpdateSlide(string quizTitle, QuizSlide updatedSlide)
     {
         var filePath = GetFileNameByTitle(quizTitle);
@@ -237,6 +270,8 @@ public static class QuizDataHandler
                 Console.WriteLine($"Slide with ID {updatedSlide.Id} not found in quiz '{quizTitle}'.");
                 return false;
             }
+
+            quizData.Timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
 
             // Replace slide data
             quizData.Quiz[index] = updatedSlide;
@@ -295,40 +330,48 @@ public static class QuizDataHandler
     public static QuizSlide GetSlideById(string quizTitle, int id)
     {
         QuizSlide returnSlide = new QuizSlide();
-        List<QuizSlide> slides = GetAllQuizSlides(quizTitle);
+        List<QuizSlide>? slides = GetQuizData(quizTitle).Quiz;
 
-        foreach(QuizSlide slide in slides)
+        if(slides != null)
         {
-            if (slide.Id == id) 
+             foreach(QuizSlide slide in slides)
             {
-                returnSlide = slide;
-                break;
+                if (slide.Id == id) 
+                {
+                    returnSlide = slide;
+                    break;
+                }
             }
-        }
 
-        return returnSlide;
+            return returnSlide;
+        }
+        else
+        {
+            Console.WriteLine($"Quizslides of quiz '{quizTitle}' not found.");
+            return new QuizSlide();   
+        }
     }
 
-    public static List<QuizSlide> GetAllQuizSlides(string quizTitle)
+    public static QuizData GetQuizData(string quizTitle)
     {
         var filePath = GetFileNameByTitle(quizTitle);
 
         if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
         {
             Console.WriteLine($"Quiz '{quizTitle}' not found.");
-            return new List<QuizSlide>();
+            return new QuizData();
         }
 
         try
         {
             var json = File.ReadAllText(filePath);
-            var quizData = JsonSerializer.Deserialize<QuizData>(json);
-            return quizData?.Quiz ?? new List<QuizSlide>();
+            QuizData? quizData = JsonSerializer.Deserialize<QuizData>(json);
+            return quizData ?? new QuizData();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error reading quiz '{quizTitle}': {ex.Message}");
-            return new List<QuizSlide>();
+            return new QuizData();
         }
     }
 

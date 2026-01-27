@@ -17,11 +17,10 @@ namespace DesktopApp
             Action onEditClick,
             Action onStartClick)
         {
-            //RIGHT SIDE
-            Border rightSide = new Border
+            Border mainBorder = new Border
             {
                 VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Right,
+                HorizontalAlignment = HorizontalAlignment.Center,
                 Width = width,
                 Classes = { "neon-frame" },
             };
@@ -31,7 +30,7 @@ namespace DesktopApp
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            rightSide.Child = detailsGrid;
+            mainBorder.Child = detailsGrid;
 
             var detailsQuizTitle = new TextBlock
             {
@@ -67,7 +66,7 @@ namespace DesktopApp
             StackPanel detailsButtons = CreateDetailsButtons(onDeleteClick, onEditClick, onStartClick);
             detailsGrid.Children.Add(detailsButtons);
 
-            return rightSide;
+            return mainBorder;
         }
 
         private static StackPanel CreateDetailsButtons(Action onDeleteClick, Action onEditClick, Action onStartClick)
@@ -99,8 +98,8 @@ namespace DesktopApp
                 Data = AppHandler.GetIcon("edit_regular"),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 30,
-                Width = 30
+                Height = 40,
+                Width = 40
             };
             Button editButton = new Button
             {
@@ -119,8 +118,8 @@ namespace DesktopApp
                 Data = AppHandler.GetIcon("delete_regular"),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 30,
-                Width = 30
+                Height = 40,
+                Width = 40
             };
             Button deleteButton = new Button
             {

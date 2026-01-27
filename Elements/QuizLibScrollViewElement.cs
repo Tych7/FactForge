@@ -19,8 +19,7 @@ namespace DesktopApp
             const int SelectedLeft = 0;
             const int UnselectedLeft = 20;
 
-            //LEFT SIDE
-            Grid leftSide = new Grid
+            Grid mainGrid = new Grid
             {
                 Width = width,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -35,7 +34,7 @@ namespace DesktopApp
                 Classes = { "neon-frame" },
                 Child = libScrollView
             };
-            leftSide.Children.Add(scrollViewBorder);
+            mainGrid.Children.Add(scrollViewBorder);
 
             Button tab1 = CreateTab("text_sort_ascending_regular", 20);
             Button tab2 = CreateTab("star_regular", 100);
@@ -57,11 +56,11 @@ namespace DesktopApp
             tab3.Click += (_, _) => { SelectTab(tab3); onTabThreeClick?.Invoke(); };
             SelectTab(tab1); // Initial state 
 
-            leftSide.Children.Add(tab1);
-            leftSide.Children.Add(tab2);
-            leftSide.Children.Add(tab3);
+            mainGrid.Children.Add(tab1);
+            mainGrid.Children.Add(tab2);
+            mainGrid.Children.Add(tab3);
 
-            return leftSide;
+            return mainGrid;
         }
 
 
@@ -96,73 +95,6 @@ namespace DesktopApp
                     OffsetY = 0
                 }
             };
-        }
-
-        private static StackPanel CreateDetailsButtons(Action onDeleteClick, Action onEditClick, Action onStartClick)
-        {
-            StackPanel buttonUnit = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                VerticalAlignment = VerticalAlignment.Bottom,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0,0,0,20),
-                Spacing = 10
-            };
-
-            Button startButton = new Button
-            {
-                Content = "START",
-                Height = 80,
-                Width = 200,
-                Classes = {"neon-text-button"},
-                Foreground = SolidColorBrush.Parse("#8C52FF"),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            startButton.Click += (_, __) => onStartClick?.Invoke();
-            buttonUnit.Children.Add(startButton);
-
-            var editIcon = new PathIcon
-            {
-                Data = AppHandler.GetIcon("edit_regular"),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 30,
-                Width = 30
-            };
-            Button editButton = new Button
-            {
-                Height = 80,
-                Width = 80,
-                Classes = {"neon-icon-button"},
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-                Content = new Border { Child = editIcon },                
-            };
-            editButton.Click += (_, __) => onEditClick?.Invoke();
-            buttonUnit.Children.Add(editButton);
-
-            var deleteButtonIcon = new PathIcon
-            {
-                Data = AppHandler.GetIcon("delete_regular"),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Height = 30,
-                Width = 30
-            };
-            Button deleteButton = new Button
-            {
-                Height = 80,
-                Width = 80,
-                Classes = {"neon-icon-button"},
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-                Content = new Border { Child = deleteButtonIcon },
-            };
-            deleteButton.Click += (_, __) => onDeleteClick?.Invoke();
-            buttonUnit.Children.Add(deleteButton);
-
-            return buttonUnit;
         }
     }
 }
