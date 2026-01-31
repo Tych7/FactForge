@@ -10,26 +10,43 @@ namespace DesktopApp;
 
 public partial class CreateQuizScreen : UserControl
 {
+    private TextBox? _quizTitleHeader;
+
     public CreateQuizScreen(string quizTitle)
     {
         InitializeComponent();
         ModifyQuizHandler.Instance.FirstInit = false;
 
         ModifyQuizHandler.Instance.SetQuizPageGrid(Quizpage);
-        ModifyQuizHandler.Instance.QuizOverviewNeedsRefresh += RefreshQuizOverview;
+        ModifyQuizHandler.Instance.QuizOverviewNeedsRefresh += RefreshQuizOverviewCallback;
         CreateSlideOverviewElements.InsertSlide += InsertSlideClick;
 
         FetchAndShowSlides(quizTitle);
         ElementHander.currentOpenQuizTitle = quizTitle;
+
+        CreateAndSetQuizTitleHeader(quizTitle);
+    }
+
+    private void CreateAndSetQuizTitleHeader(string QuizTitle)
+    {
+        _quizTitleHeader = new TextBox
+        {
+            Classes = {"neon-input"},
+            Text = QuizTitle,
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+        };
+        ElementHander.AutoFitTextBox(_quizTitleHeader, false);
+
+        QuizTitleHeader.Children.Add(_quizTitleHeader);
     }
 
     private void FetchAndShowSlides(string quizTitle)
     {
-        ModifyQuizHandler.Instance.slides = QuizDataHandler.GetAllQuizSlides(quizTitle);
+        ModifyQuizHandler.Instance.slides = QuizDataHandler.GetQuizData(quizTitle).Quiz;
         QuizOverview.Child = ModifyQuizHandler.Instance.InitQuizOverview();
     }
 
-    private void RefreshQuizOverview()
+    private void RefreshQuizOverviewCallback()
     {
         QuizOverview.Child = ModifyQuizHandler.Instance.InitQuizOverview();
     }
@@ -105,6 +122,17 @@ public partial class CreateQuizScreen : UserControl
     private void BackClick(object? sender, RoutedEventArgs e)
     {
         ModifyQuizHandler.Instance.WriteNewQuestionData();
+
+        if(ElementHander.currentOpenQuizTitle != null && _quizTitleHeader != null)
+        {
+            if(ElementHander.currentOpenQuizTitle != _quizTitleHeader.Text)
+            {
+                var currentQuizData = QuizDataHandler.GetQuizData(ElementHander.currentOpenQuizTitle);
+                currentQuizData.Title = _quizTitleHeader.Text;
+                QuizDataHandler.ReplaceQuizData(ElementHander.currentOpenQuizTitle, currentQuizData);
+            }
+        }
+        
         
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

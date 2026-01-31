@@ -29,10 +29,6 @@
             </Setter>
         </Style>
 
-        <Style Selector="TextBox.neon-input:pointerover">
-            <Setter Property="BorderThickness" Value="8"/>
-        </Style>
-
         <Style Selector="TextBox.neon-input:focus">
             <Setter Property="Effect">
                 <DropShadowEffect 
