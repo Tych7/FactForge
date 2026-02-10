@@ -52,7 +52,6 @@ public class ModifyQuizHandler
 
             foreach (QuizSlide slide in slides)
             {
-                // if (currentSelectedSlide?.Id == slide.Id && currentSelectedSlide?.Id == 0) quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateInsertElement());
                 switch (slide.Type)
                 {
                     case var t when t == SlideTypes.MultipleChoiceQuestion:
@@ -70,7 +69,6 @@ public class ModifyQuizHandler
                         textIndex++;
                         break;
                 }
-                // if (currentSelectedSlide?.Id == slide.Id) quizOverviewPanel.Children.Add(CreateSlideOverviewElements.CreateInsertElement());
             }
         }
         else
@@ -128,7 +126,7 @@ public class ModifyQuizHandler
                     },
                     BgImagePath = _returnData.BgImagePath,
                     Category = _returnData.Category,
-                    ImagePath = _returnData.ImagePath,
+                    ImagePath = ElementHander.currentSlideImagePath,
                     AudioPath = _returnData.AudioPath
                 };
             }
@@ -146,7 +144,7 @@ public class ModifyQuizHandler
                     Time = int.Parse(_returnData.Time?.SelectedValue?.ToString() ?? ""),
                     BgImagePath = _returnData.BgImagePath,
                     Category = _returnData.Category,
-                    ImagePath = _returnData.ImagePath,
+                    ImagePath = ElementHander.currentSlideImagePath,
                     AudioPath = _returnData.AudioPath
                 };
             }

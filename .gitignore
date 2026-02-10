@@ -18,4 +18,8 @@ Data/Quizzen/*
 Data/QuizResults/*
 !Data/QuizResults/.gitkeep
 
+#Uploaded slide images
+Data/SlideImages/*
+!Data/SlideImages/.gitkeep
+
 

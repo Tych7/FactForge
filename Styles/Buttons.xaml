@@ -86,6 +86,35 @@
             </Setter>
         </Style>
 
+        <!-- Image Scrollview Button -->
+        <Style Selector="Button.neon-image-button">
+            <Setter Property="BorderBrush" Value="#8C52FF"/>     
+            <Setter Property="BorderThickness" Value="5"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Effect">
+                <DropShadowEffect
+                    Color="#8C52FF"
+                    BlurRadius="10"
+                    Opacity="0.8"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+        <Style Selector="Button.neon-image-button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#AAFFFF"/>
+            <Setter Property="Effect">
+                <DropShadowEffect 
+                    Color="#00FFFF"
+                    BlurRadius="30"
+                    Opacity="0.8"
+                    OffsetX="0"
+                    OffsetY="0"/>
+            </Setter>
+        </Style>
+
+
         <!-- Neon Text Button -->
         <Style Selector="Button.neon-text-button">
             <Setter Property="Background" Value="Transparent"/>

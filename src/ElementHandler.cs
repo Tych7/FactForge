@@ -6,6 +6,10 @@ using System.Linq;
 using static QuizSlide;
 using System.Collections.Generic;
 using Avalonia.Controls.ApplicationLifetimes;
+using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
+using System.IO;
+using System;
 
 namespace DesktopApp;
 
@@ -24,14 +28,18 @@ public static class ElementHander
     public static ComboBox? currentCorrectAnswerDropDown;
     public static ComboBox? currentheaderTextSizeDropDown;
     public static ComboBox? currentsubTextSizeDropDown;
-
+    public static string? currentSlideImagePath;
     public static (int headerTextSize, int subtextTextSize) textSizes = (150, 80);
+
 
     public static ComboBox OpenSlidePanelClick(QuizSlide slide)
     {
         StackPanel slideOptions = new StackPanel();
         ComboBox timeDropDown = new ComboBox();
         
+        //SLIDE IMAGE OPTION
+        StackPanel slideImageOption = CreateImageUploadPanelOption(slide);
+        slideOptions.Children.Add(slideImageOption);
 
         if(slide.Type == SlideTypes.Text)
         {
@@ -61,7 +69,6 @@ public static class ElementHander
             }
         }
         
-
         var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as MainWindow;
 
         if (mainWindow != null)
@@ -188,6 +195,51 @@ public static class ElementHander
         
         return optionCountOption;
     }
+
+    private static StackPanel CreateImageUploadPanelOption(QuizSlide slide)
+    {
+        if(currentSlideImagePath == null) currentSlideImagePath = slide.ImagePath;
+
+        StackPanel imageOption = new StackPanel
+        {
+            Orientation = Orientation.Vertical,
+            Margin = new Thickness(20, 20, 20, 0)
+        };
+
+        TextBlock title = new TextBlock
+        {
+            Text = "Slide Image:",
+            Classes = { "neon-text" },
+            FontSize = 40
+        };
+        imageOption.Children.Add(title);
+
+        Button uploadButton = new Button
+        {
+            Content = "Upload image",
+            Classes = { "neon-text-button" },
+            Foreground = new SolidColorBrush(Color.Parse("#8C52FF")),
+            Margin = new Thickness(0, 10, 0, 0),
+            FontSize = 15,
+        };
+
+        uploadButton.Click += async (_, __) =>
+        {
+            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow as MainWindow;
+            if (mainWindow != null)
+            {
+                Grid imageSelectionDialog = Dialog.SelectOrUploadSlideImage(mainWindow.ModalLayerContainer, (selectedImagePath) =>
+                {
+                });
+                mainWindow.ModalLayerContainer.Children.Add(imageSelectionDialog);
+            }
+        };
+
+        imageOption.Children.Add(uploadButton);
+
+        return imageOption;
+    }
+
 
     public static void AutoFitTextBox(TextBox textBox, bool wrapText)
     {

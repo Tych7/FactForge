@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using Tmds.DBus.Protocol;
 using static QuizSlide;
 
@@ -11,6 +16,10 @@ namespace DesktopApp;
 public static class QuizDataHandler
 {
     static QuizDataHandler(){}
+
+    public static readonly string SlideImageStoragePath = Path.Combine(Environment.CurrentDirectory, "Data", "SlideImages");
+
+    private static readonly Dictionary<string, Bitmap> _bitmapCache = new();
 
     private static QuizSlide defaultQuestionSlide = new QuizSlide
     {
@@ -411,6 +420,96 @@ public static class QuizDataHandler
         return titles;
     }
 
+    public static async Task PickAndStoreImage()
+    {
+        var mainWindow =
+            (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+            ?.MainWindow;
+
+        if (mainWindow?.StorageProvider == null)
+            return;
+
+        var files = await mainWindow.StorageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                Title = "Select an image",
+                AllowMultiple = true,
+                FileTypeFilter =
+                [
+                    new FilePickerFileType("Images")
+                    {
+                        Patterns = ["*.png", "*.jpg", "*.jpeg", "*.webp"]
+                    }
+                ]
+            });
+
+        if(files.Count == 0) return;
+
+        Directory.CreateDirectory(SlideImageStoragePath);
+
+        foreach (var file in files)
+        {
+            var extension = Path.GetExtension(file.Name);
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            var destinationPath = Path.Combine(SlideImageStoragePath, fileName);
+
+            await using var sourceStream = await file.OpenReadAsync();
+            await using var targetStream = File.Create(destinationPath);
+            await sourceStream.CopyToAsync(targetStream);
+        }
+    }
+
+    public static List<string> GetAllSlideImagePaths()
+    {
+        if (!Directory.Exists(SlideImageStoragePath))
+            return new List<string>();
+
+        string[] allowedExtensions = { ".png", ".jpg", ".jpeg", ".webp" };
+
+        return Directory
+            .EnumerateFiles(SlideImageStoragePath, "*.*", SearchOption.TopDirectoryOnly)
+            .Where(f => allowedExtensions.Contains(Path.GetExtension(f).ToLower()))
+            .ToList();
+    }
+
+    public static Bitmap GetCachedBitmap(string path)
+    {
+        if (_bitmapCache.TryGetValue(path, out var bmp))
+            return bmp;
+
+        using var stream = File.OpenRead(path);
+        bmp = Bitmap.DecodeToWidth(stream, 160);
+        _bitmapCache[path] = bmp;
+        return bmp;
+    }
+
+    public static bool DeleteSlideImage(string path)
+    {
+        try
+        {
+            // Remove from cache first
+            if (_bitmapCache.TryGetValue(path, out var bitmap))
+            {
+                bitmap.Dispose();
+                _bitmapCache.Remove(path);
+            }
+
+            // Delete file from disk
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to delete image '{path}': {ex.Message}");
+            return false;
+        }
+    }
+
     private static int GetFirstAvailibleQuizId()
     {
         var quizPath = Path.Combine(Environment.CurrentDirectory, "Data", "Quizzen");
@@ -431,14 +530,8 @@ public static class QuizDataHandler
         int expected = 1;
         foreach (var id in ids)
         {
-            if (id == expected)
-            {
-                expected++;
-            }
-            else
-            {
-                break;
-            }
+            if (id == expected) expected++;
+            else break;
         }
 
         return expected;

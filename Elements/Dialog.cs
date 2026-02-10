@@ -1,14 +1,74 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Tmds.DBus.Protocol;
 
 namespace DesktopApp
 {
     public static class Dialog
     {
+        public static Grid SelectOrUploadSlideImage(Grid parentGrid, Action<string> onConfirm)
+        {
+            int dialogWidth = 1200;
+            int dialogHeight = 800;
+            int edgeSpacing = 20;
+
+            Grid dialogGrid = new Grid { };
+
+            Border darkOverlay = CreateOverlay();
+            dialogGrid.Children.Add(darkOverlay);
+
+            Border dialogFrame = AddDialogFrame(dialogHeight, dialogWidth);
+            dialogGrid.Children.Add(dialogFrame);
+            
+            Grid dialogWindow = AddDialogWindow(dialogHeight, dialogWidth);
+
+            TextBlock dialogHeader = AddDialogHeader("Select an Image", edgeSpacing);
+            dialogWindow.Children.Add(dialogHeader);
+
+            int buttonPanelHeigth = 100;
+            Grid buttonPanel = new Grid
+            {
+                Width = dialogWidth,
+                Height = buttonPanelHeigth,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Margin = new Avalonia.Thickness(0, 0, 0, edgeSpacing)
+            };
+
+            Grid ImageSelection = AddImageSelection(QuizDataHandler.GetAllSlideImagePaths());
+            dialogWindow.Children.Add(ImageSelection);
+
+            // Close Button
+            var UploadNewButton = AddButton("Upload New", edgeSpacing, HorizontalAlignment.Left, dialogWidth / 2 - edgeSpacing * 1.5);
+            UploadNewButton.Click += async (sender, e) =>
+            {
+                await QuizDataHandler.PickAndStoreImage();
+                parentGrid.Children.Remove(dialogGrid);
+                SelectOrUploadSlideImage(parentGrid, onConfirm);
+            };
+            buttonPanel.Children.Add(UploadNewButton);
+
+            // Confirm Button
+            var confirmButton = AddButton("Confirm", edgeSpacing, HorizontalAlignment.Right, dialogWidth / 2 - edgeSpacing * 1.5);
+            confirmButton.Click += (sender, e) =>
+            {
+                onConfirm?.Invoke(_selectedButton?.Name ?? string.Empty);
+                parentGrid.Children.Remove(dialogGrid);
+            };
+            buttonPanel.Children.Add(confirmButton);
+            dialogWindow.Children.Add(buttonPanel);
+
+            dialogGrid.Children.Add(dialogWindow);
+            return dialogGrid;
+        }
+
         public static Grid AreYouSure(Grid parentGrid, string message, Action onConfirm)
         {
             int dialogWidth = 600;
@@ -42,7 +102,7 @@ namespace DesktopApp
             };
 
             // Close Button
-            var closeButton = AddButtonLeft("Close", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            var closeButton = AddButton("Close", edgeSpacing, HorizontalAlignment.Left, dialogWidth / 2 - edgeSpacing * 1.5);
             closeButton.Click += (sender, e) =>
             {
                 parentGrid.Children.Remove(dialogGrid);
@@ -50,7 +110,7 @@ namespace DesktopApp
             buttonPanel.Children.Add(closeButton);
 
             // Confirm Button
-            var confirmButton = AddButtonRight("Confirm", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            var confirmButton = AddButton("Confirm", edgeSpacing, HorizontalAlignment.Right, dialogWidth / 2 - edgeSpacing * 1.5);
             confirmButton.Click += (sender, e) =>
             {
                 onConfirm?.Invoke();
@@ -96,7 +156,7 @@ namespace DesktopApp
             };
 
             // Close Button
-            var closeButton = AddButtonLeft("Close", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            var closeButton = AddButton("Close", edgeSpacing, HorizontalAlignment.Left, dialogWidth / 2 - edgeSpacing * 1.5);
             closeButton.Click += (sender, e) =>
             {
                 parentGrid.Children.Remove(dialogGrid);
@@ -104,7 +164,7 @@ namespace DesktopApp
             buttonPanel.Children.Add(closeButton);
 
             // Confirm Button
-            var confirmButton = AddButtonRight("Confirm", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            var confirmButton = AddButton("Confirm", edgeSpacing, HorizontalAlignment.Right, dialogWidth / 2 - edgeSpacing * 1.5);
             confirmButton.Click += (sender, e) =>
             {
                 onConfirm?.Invoke(titleInput.Text!);
@@ -151,7 +211,7 @@ namespace DesktopApp
             };
 
             // Close Button
-            var closeButton = AddButtonLeft("Close", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            var closeButton = AddButton("Close", edgeSpacing, HorizontalAlignment.Left, dialogWidth / 2 - edgeSpacing * 1.5);
             closeButton.Click += (sender, e) =>
             {
                 parentGrid.Children.Remove(dialogGrid);
@@ -159,7 +219,7 @@ namespace DesktopApp
             buttonPanel.Children.Add(closeButton);
 
             // Confirm Button
-            var confirmButton = AddButtonRight("Confirm", edgeSpacing, dialogWidth / 2 - edgeSpacing * 1.5);
+            var confirmButton = AddButton("Confirm", edgeSpacing, HorizontalAlignment.Right, dialogWidth / 2 - edgeSpacing * 1.5);
             confirmButton.Click += (sender, e) =>
             {
                 onConfirm?.Invoke(slideTypeInput?.SelectedValue?.ToString()!);
@@ -306,33 +366,98 @@ namespace DesktopApp
             return (userInput, DropDownReference);
         }
 
-
-        private static Button AddButtonLeft(string content, int edgeMargin, double width)
+        private static Button AddButton(string content, int edgeMargin, HorizontalAlignment horizontalAlignment, double width)
         {
-            return new Button
+            Button button = new Button
             {
                 Content = content,
                 Classes = { "neon-text-button" },
-                Margin = new Avalonia.Thickness(edgeMargin, 0, 0, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
+                HorizontalAlignment = horizontalAlignment,
                 Width = width,
                 Height = 70,
                 Foreground= new SolidColorBrush(Color.Parse("#8C52FF"))
             };
+
+            switch (horizontalAlignment)
+            {
+                case HorizontalAlignment.Left:
+                    button.Margin = new Thickness(edgeMargin,0,0,0);
+                    break;
+                case HorizontalAlignment.Right:
+                    button.Margin = new Thickness(0,0,edgeMargin,0);
+                        break;
+            }
+            return button;
         }
 
-        private static Button AddButtonRight(string content, int edgeMargin, double width)
+        private static Button? _selectedButton;
+        private static Grid AddImageSelection(List<string> imagePaths)
         {
-            return new Button
+            Grid root = new Grid
             {
-                Content = content,
-                Classes = { "neon-text-button" },
-                Margin = new Avalonia.Thickness(0, 0, edgeMargin, 0),
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Width = width,
-                Height = 70,
-                Foreground = new SolidColorBrush(Color.Parse("#8C52FF"))
+                RowDefinitions = new RowDefinitions("Auto,*"),
+                Margin = new Thickness(50, 100, 50, 150),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
             };
+
+            ScrollViewer scrollViewer = new ScrollViewer
+            {
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+            };
+
+            UniformGrid imageGrid = new UniformGrid
+            {
+                Columns = 6,
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+
+            foreach (var path in imagePaths)
+            {
+                if (!File.Exists(path))
+                    continue;
+
+                var bitmap = QuizDataHandler.GetCachedBitmap(path);
+
+                Button imageButton = new Button
+                {
+                    Name = path,
+                    Classes = {"neon-image-button"},
+                    Width = 160,
+                    Height = 160,
+                    Margin = new Thickness(8),
+                    Padding = new Thickness(0),
+                    HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                    VerticalContentAlignment = VerticalAlignment.Stretch,
+                };
+                if(path == ElementHander.currentSlideImagePath) imageButton.BorderBrush = Brushes.White;
+
+                Image image = new Image
+                {
+                    Source = bitmap
+                };
+
+                imageButton.Content = image;
+
+                imageButton.Click += (_, __) =>
+                {
+                    foreach(Button element in imageGrid.Children) element.BorderBrush = new SolidColorBrush(Color.Parse("#8C52FF"));
+
+                    // select this button
+                    imageButton.BorderBrush = Brushes.White;
+                    _selectedButton = imageButton;
+
+                    ElementHander.currentSlideImagePath = path;
+                };
+
+                imageGrid.Children.Add(imageButton);
+            }
+
+            scrollViewer.Content = imageGrid;
+            Grid.SetRow(scrollViewer, 1);
+            root.Children.Add(scrollViewer);
+
+            return root;
         }
     
     }
